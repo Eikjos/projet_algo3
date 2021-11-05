@@ -159,7 +159,6 @@ public interface Graph {
      * Réinitialise ce graphe : retire tous les sommets et supprime toutes les
      * relations. À la fin de la méthode, ce graphe se trouvera dans le même
      * état qu'à sa création.
-     * @return true ou false selon si la réinitialisation a été menée à bien.
      */
-    boolean clear();
+    void clear();
 }
