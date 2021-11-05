@@ -1,5 +1,10 @@
 package graph;
 
+import graph.exceptions.ArcNotFound;
+import graph.exceptions.DuplicateArc;
+import graph.exceptions.DuplicateVertex;
+import graph.exceptions.VertexNotFound;
+
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -24,7 +29,7 @@ public interface Graph {
      * @param x Le sommet à ajouter dans le graphe.
      * @return true ou false selon si le sommet a bien été ajouté au graphe.
      */
-    boolean addVertex(Vertex x);
+    boolean addVertex(Vertex x) throws DuplicateVertex;
 
     /**
      * Retire le sommet dénoté par x dans le graphe. Supprime également toutes
@@ -33,7 +38,7 @@ public interface Graph {
      * @param x Le sommet à retirer du graphe.
      * @return true ou false selon si le sommet a bien été retiré du graphe.
      */
-    boolean removeVertex(Vertex x);
+    boolean removeVertex(Vertex x) throws VertexNotFound;
 
     /**
      * Indique si le sommet dénoté par x est contenu dans ce graphe.
@@ -48,7 +53,7 @@ public interface Graph {
      * @param x Le sommet à rechercher dans ce graphe.
      * @return L'objet décrivant le sommet dans le graphe.
      */
-    Vertex getVertex(Vertex x);
+    Vertex getVertex(Vertex x) throws VertexNotFound;
 
     /**
      * Recherche l'objet décrivant le sommet dont le nom est strictement égal à
@@ -71,7 +76,7 @@ public interface Graph {
      * @param y Le sommet d'arrivée de l'arc.
      * @return true ou false selon si l'arc de x vers y a bien été créé.
      */
-    boolean createArc(Vertex x, Vertex y);
+    boolean createArc(Vertex x, Vertex y) throws DuplicateArc, VertexNotFound;
 
     /**
      * Supprime l'arc partant du sommet dénoté par x et pointant vers le sommet
@@ -83,7 +88,7 @@ public interface Graph {
      * @param y Le sommet d'arrivée de l'arc.
      * @return true ou false selon si l'arc de x vers y a bien été supprimé.
      */
-    boolean deleteArc(Vertex x, Vertex y);
+    boolean deleteArc(Vertex x, Vertex y) throws ArcNotFound, VertexNotFound;
 
     /**
      * Surcharge de deleteArc(Vertex, Vertex) prenant en charge un objet Arc
@@ -91,7 +96,7 @@ public interface Graph {
      * @param a Arc à supprimer du graphe.
      * @return true ou false selon si l'arc de x vers y a bien été supprimé.
      */
-    boolean deleteArc(Arc a);
+    boolean deleteArc(Arc a) throws VertexNotFound;
 
     /**
      * Indique si un arc partant du sommet dénoté par x et pointant vers le
@@ -101,7 +106,7 @@ public interface Graph {
      * @param y Le sommet d'arrivée de l'arc.
      * @return true ou false selon si un arc de x vers y existe dans le graphe.
      */
-    boolean containsArc(Vertex x, Vertex y);
+    boolean containsArc(Vertex x, Vertex y) throws VertexNotFound;
 
     /**
      * Recherche l'objet décrivant l'arc du sommet dénoté par x et pointant
@@ -112,7 +117,7 @@ public interface Graph {
      * @param y Le sommet d'arrivée de l'arc.
      * @return L'objet décrivant l'arc de x vers y dans le graphe.
      */
-    Arc getArc(Vertex x, Vertex y);
+    Arc getArc(Vertex x, Vertex y) throws ArcNotFound, VertexNotFound;
 
     //- Informations sur le graphe
 
