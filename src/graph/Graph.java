@@ -96,7 +96,7 @@ public interface Graph {
      * @param a Arc à supprimer du graphe.
      * @return true ou false selon si l'arc de x vers y a bien été supprimé.
      */
-    boolean deleteArc(Arc a) throws VertexNotFound;
+    boolean deleteArc(Arc a) throws ArcNotFound, VertexNotFound;
 
     /**
      * Indique si un arc partant du sommet dénoté par x et pointant vers le
