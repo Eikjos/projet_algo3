@@ -6,7 +6,11 @@ import graph.exceptions.DuplicateVertex;
 import graph.exceptions.VertexNotFound;
 import util.Assert;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Une implémentation de l'interface Graph en utilisant une TreeSet pour
