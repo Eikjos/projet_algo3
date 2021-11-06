@@ -31,8 +31,8 @@ public class Arc implements Comparable<Arc> {
      * @param to Le sommet d'arrivée de cet arc.
      */
     public Arc(Vertex from, Vertex to) {
-        Assert.check(from != null, "Le sommet de départ est null");
-        Assert.check(to != null, "Le sommet d'arrivée est null");
+        Assert.check(from != null, "from must not be null");
+        Assert.check(to != null, "to must not be null");
         this.from = from;
         this.to = to;
     }

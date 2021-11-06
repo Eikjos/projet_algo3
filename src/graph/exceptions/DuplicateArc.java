@@ -22,8 +22,7 @@ public class DuplicateArc extends Exception {
      * @param arc L'arc existant déjà dans le graphe.
      */
     public DuplicateArc(Arc arc) {
-        super("Un arc reliant \"" + arc.getFrom().getName() + "\" à \""
-                + arc.getTo().getName() + "\" existe déjà dans le graphe");
+        super(arc + " already exists in graph");
         this.arc = arc;
     }
 

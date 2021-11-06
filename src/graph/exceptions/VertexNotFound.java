@@ -23,7 +23,7 @@ public class VertexNotFound extends Exception {
      * @param vertex Le sommet n'ayant pas pu être trouvé dans le graphe.
      */
     public VertexNotFound(Vertex vertex) {
-        super("Le sommet \"" + vertex.getName() + "\" n'a pas pu être trouvé");
+        super(vertex + " could not be not found in graph");
         this.vertex = vertex;
     }
 

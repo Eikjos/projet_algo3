@@ -22,8 +22,7 @@ public class DuplicateVertex extends Exception {
      * @param vertex Le sommet qui existe déjà dans le graphe.
      */
     public DuplicateVertex(Vertex vertex) {
-        super("Le sommet \"" + vertex.getName() + "\" existe déjà"
-                + " dans le graphe");
+        super(vertex + " already exists in graph");
         this.vertex = vertex;
     }
 

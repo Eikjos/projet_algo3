@@ -49,7 +49,7 @@ public class StdGraph implements Graph {
      */
     @Override
     public void addVertex(Vertex x) throws DuplicateVertex {
-        Assert.check(x != null, "Le sommet à ajouter ne doit pas être null");
+        Assert.check(x != null, "x must not be null");
         if (vertices.contains(x)) {
             throw new DuplicateVertex(x);
         }
@@ -65,7 +65,7 @@ public class StdGraph implements Graph {
      */
     @Override
     public void removeVertex(Vertex x) throws VertexNotFound {
-        Assert.check(x != null, "Le sommet à retirer ne doit pas être null");
+        Assert.check(x != null, "x must not be null");
         if (!vertices.contains(x)) {
             throw new VertexNotFound(x);
         }
@@ -85,7 +85,7 @@ public class StdGraph implements Graph {
      */
     @Override
     public boolean containsVertex(Vertex x) {
-        Assert.check(x != null, "Le sommet x ne doit pas être null");
+        Assert.check(x != null, "x must not be null");
         return vertices.contains(x);
     }
 
@@ -98,7 +98,7 @@ public class StdGraph implements Graph {
      */
     @Override
     public Vertex getVertex(Vertex x) throws VertexNotFound {
-        Assert.check(x != null, "Le sommet x ne doit pas être null");
+        Assert.check(x != null, "x must not be null");
         for (Vertex y : vertices) {
             if (x.equals(y)) {
                 return y;
@@ -117,7 +117,7 @@ public class StdGraph implements Graph {
      */
     @Override
     public Vertex findVertexByName(String search) {
-        Assert.check(search != null, "La chaine search ne doit pas être null");
+        Assert.check(search != null, "search must not be null");
         Vertex result = null;
         for (Vertex x : vertices) {
             if (x.getName().equals(search)) {
@@ -140,8 +140,8 @@ public class StdGraph implements Graph {
      */
     @Override
     public void createArc(Vertex x, Vertex y) throws DuplicateArc, VertexNotFound {
-        Assert.check(x != null && y != null,
-                "Les sommets x et y ne doivent pas être null");
+        Assert.check(x != null, "x must not be null");
+        Assert.check(y != null, "y must not be null");
         if (!vertices.contains(x)) {
             throw new VertexNotFound(x);
         }
@@ -167,8 +167,8 @@ public class StdGraph implements Graph {
      */
     @Override
     public void deleteArc(Vertex x, Vertex y) throws ArcNotFound, VertexNotFound {
-        Assert.check(x != null && y != null,
-                "Les sommets x et y ne doivent pas être null");
+        Assert.check(x != null, "x must not be null");
+        Assert.check(y != null, "y must not be null");
         if (!vertices.contains(x)) {
             throw new VertexNotFound(x);
         }
@@ -207,8 +207,8 @@ public class StdGraph implements Graph {
      */
     @Override
     public boolean containsArc(Vertex x, Vertex y) throws VertexNotFound {
-        Assert.check(x != null && y != null,
-                "Les sommets x et y ne doivent pas être null");
+        Assert.check(x != null, "x must not be null");
+        Assert.check(y != null, "y must not be null");
         if (!vertices.contains(x)) {
             throw new VertexNotFound(x);
         }
@@ -231,8 +231,8 @@ public class StdGraph implements Graph {
      */
     @Override
     public Arc getArc(Vertex x, Vertex y) throws ArcNotFound, VertexNotFound {
-        Assert.check(x != null && y != null,
-                "Les sommets x et y ne doivent pas être null");
+        Assert.check(x != null, "x must not be null");
+        Assert.check(y != null, "y must not be null");
         if (!vertices.contains(x)) {
             throw new VertexNotFound(x);
         }

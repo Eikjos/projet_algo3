@@ -22,8 +22,7 @@ public class ArcNotFound extends Exception {
      * @param arc L'arc n'ayant pas pu être trouvé dans le graphe.
      */
     public ArcNotFound(Arc arc) {
-        super("L'arc reliant \"" + arc.getFrom().getName() + "\" à \""
-                + arc.getTo().getName() + "\" n'a pas pu être trouvé");
+        super(arc + " could not be found in graph");
         this.arc = arc;
     }
 
