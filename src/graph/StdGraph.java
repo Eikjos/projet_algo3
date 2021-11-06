@@ -8,6 +8,7 @@ import util.Assert;
 
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -69,9 +70,10 @@ public class StdGraph implements Graph {
         if (!vertices.contains(x)) {
             throw new VertexNotFound(x);
         }
-        for (Arc a : arcs) {
+        for (Iterator<Arc> it = arcs.iterator(); it.hasNext();) {
+            Arc a = it.next();
             if (a.isImplied(x)) {
-                arcs.remove(a);
+                it.remove();
             }
         }
         vertices.remove(x);
