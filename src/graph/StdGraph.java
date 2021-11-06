@@ -292,7 +292,9 @@ public class StdGraph implements Graph {
         SortedSet<Vertex> set = new TreeSet<Vertex>(new Comparator<Vertex>() {
             @Override
             public int compare(Vertex o1, Vertex o2) {
-                return vertexFrom(o2).size() - vertexFrom(o1).size();
+                int d = vertexFrom(o2).size() - vertexFrom(o1).size();
+                if (d != 0) return d;
+                return o1.compareTo(o2);
             }
         });
         set.addAll(vertices);
