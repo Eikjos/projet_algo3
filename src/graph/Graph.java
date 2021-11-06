@@ -161,6 +161,20 @@ public interface Graph {
     //- Opérations générales
 
     /**
+     * @param x Le sommet avec lequel rechercher.
+     * @return Les sommets à destination d'un arc partant du sommet partant du
+     * sommet dénoté par x.
+     */
+    Set<Vertex> vertexFrom(Vertex x);
+
+    /**
+     * @param x Le sommet avec lequel rechercher.
+     * @return Les sommets au départ d'un arc à destination du sommet dénoté
+     * par x.
+     */
+    Set<Vertex> vertexTo(Vertex x);
+
+    /**
      * Réinitialise ce graphe : retire tous les sommets et supprime toutes les
      * relations. À la fin de la méthode, ce graphe se trouvera dans le même
      * état qu'à sa création.
