@@ -25,9 +25,7 @@ abstract public class Vertex implements Comparable<Vertex> {
      */
     @Override
     public int compareTo(Vertex o) {
-        int d = 0;
-        d += getName().compareTo(o.getName());
-        return d;
+        return getName().compareTo(o.getName());
     }
 
     /**
