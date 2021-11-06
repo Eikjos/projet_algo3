@@ -14,4 +14,13 @@ public class Assert {
             throw new AssertionError(description);
         }
     }
+
+    /**
+     * Surcharge de la méthode check(boolean, String) sans possibilité de
+     * fournir un message descriptif de l'assertion échouée.
+     * @param condition Condition à vérifier.
+     */
+    public static void check(boolean condition) {
+        check(condition, null);
+    }
 }
