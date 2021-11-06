@@ -10,9 +10,6 @@ public class Assert {
      * @param description Description de l'erreur rencontrée.
      */
     public static void check(boolean condition, String description) {
-        if (description == null) {
-            throw new AssertionError("La chaine descriptive est null");
-        }
         if (!condition) {
             throw new AssertionError(description);
         }
