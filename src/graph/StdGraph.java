@@ -46,15 +46,14 @@ public class StdGraph implements Graph {
      * trouve déjà dans le graphe, une exception DuplicateVertex est levée.
      *
      * @param x Le sommet à ajouter dans le graphe.
-     * @return true ou false selon si le sommet a bien été ajouté au graphe.
      */
     @Override
-    public boolean addVertex(Vertex x) throws DuplicateVertex {
+    public void addVertex(Vertex x) throws DuplicateVertex {
         Assert.check(x != null, "Le sommet à ajouter ne doit pas être null");
         if (vertices.contains(x)) {
             throw new DuplicateVertex(x);
         }
-        return vertices.add(x);
+        vertices.add(x);
     }
 
     /**
@@ -63,10 +62,9 @@ public class StdGraph implements Graph {
      * trouve pas dans le graphe, une exception VertexNotFound est levée.
      *
      * @param x Le sommet à retirer du graphe.
-     * @return true ou false selon si le sommet a bien été retiré du graphe.
      */
     @Override
-    public boolean removeVertex(Vertex x) throws VertexNotFound {
+    public void removeVertex(Vertex x) throws VertexNotFound {
         Assert.check(x != null, "Le sommet à retirer ne doit pas être null");
         if (!vertices.contains(x)) {
             throw new VertexNotFound(x);
@@ -76,7 +74,7 @@ public class StdGraph implements Graph {
                 arcs.remove(a);
             }
         }
-        return vertices.remove(x);
+        vertices.remove(x);
     }
 
     /**
@@ -139,10 +137,9 @@ public class StdGraph implements Graph {
      *
      * @param x Le sommet de départ de l'arc.
      * @param y Le sommet d'arrivée de l'arc.
-     * @return true ou false selon si l'arc de x vers y a bien été créé.
      */
     @Override
-    public boolean createArc(Vertex x, Vertex y) throws DuplicateArc, VertexNotFound {
+    public void createArc(Vertex x, Vertex y) throws DuplicateArc, VertexNotFound {
         Assert.check(x != null && y != null,
                 "Les sommets x et y ne doivent pas être null");
         if (!vertices.contains(x)) {
@@ -155,7 +152,7 @@ public class StdGraph implements Graph {
         if (arcs.contains(a)) {
             throw new DuplicateArc(a);
         }
-        return arcs.add(a);
+        arcs.add(a);
     }
 
     /**
@@ -167,10 +164,9 @@ public class StdGraph implements Graph {
      *
      * @param x Le sommet de départ de l'arc.
      * @param y Le sommet d'arrivée de l'arc.
-     * @return true ou false selon si l'arc de x vers y a bien été supprimé.
      */
     @Override
-    public boolean deleteArc(Vertex x, Vertex y) throws ArcNotFound, VertexNotFound {
+    public void deleteArc(Vertex x, Vertex y) throws ArcNotFound, VertexNotFound {
         Assert.check(x != null && y != null,
                 "Les sommets x et y ne doivent pas être null");
         if (!vertices.contains(x)) {
@@ -182,7 +178,8 @@ public class StdGraph implements Graph {
         Arc a = new Arc(x, y);
         for (Arc b : arcs) {
             if (b.equals(a)) {
-                return arcs.remove(b);
+                arcs.remove(b);
+                return;
             }
         }
         throw new ArcNotFound(a);
@@ -193,11 +190,10 @@ public class StdGraph implements Graph {
      * obtenu à l'aide de la méthode getArc.
      *
      * @param a Arc à supprimer du graphe.
-     * @return true ou false selon si l'arc de x vers y a bien été supprimé.
      */
     @Override
-    public boolean deleteArc(Arc a) throws ArcNotFound, VertexNotFound {
-        return deleteArc(a.getFrom(), a.getTo());
+    public void deleteArc(Arc a) throws ArcNotFound, VertexNotFound {
+        deleteArc(a.getFrom(), a.getTo());
     }
 
     /**
