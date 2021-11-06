@@ -57,6 +57,6 @@ abstract public class Vertex implements Comparable<Vertex> {
      */
     @Override
     public String toString() {
-        return "[Sommet] " + getName();
+        return "[Vertex] " + getName();
     }
 }
