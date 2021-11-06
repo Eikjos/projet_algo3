@@ -8,7 +8,7 @@ import util.Assert;
  * existe un arc partant du sommet dénoté par x et pointant vers le sommet
  * dénoté par y.
  */
-public class Arc {
+public class Arc implements Comparable<Arc> {
 
     //- ATTRIBUTS
 
@@ -51,5 +51,64 @@ public class Arc {
      */
     public Vertex getTo() {
         return to;
+    }
+
+    /**
+     * @param x Le sommet à comparer à cet arc.
+     * @return true ou false selon si le sommet dénoté par x est impliqué dans
+     * cet arc.
+     */
+    public boolean isImplied(Vertex x) {
+        return getFrom().equals(x) || getTo().equals(x);
+    }
+
+    /**
+     * @param o Un arc avec lequel comparer cet arc.
+     * @return 0 si les deux arcs sont équivalents, une valeur strictement
+     * positive ou négative sinon.
+     */
+    @Override
+    public int compareTo(Arc o) {
+        int d = 0;
+        d += getFrom().compareTo(o.getFrom());
+        if (d != 0) {
+            return d;
+        }
+        d += getTo().compareTo(o.getTo());
+        return d;
+    }
+
+    /**
+     * @param obj Un objet quelconque à comparer avec cet arc.
+     * @return true ou false selon si les deux objets représentent le même
+     * arc.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Arc) {
+            Arc x = (Arc) obj;
+            return getFrom().equals(x.getFrom())
+                    && getTo().equals(x.getTo());
+        }
+        return false;
+    }
+
+    /**
+     * @return Un hashcode permettant d'identifier l'arc parmi d'autres.
+     */
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash += 31 * hash + getFrom().hashCode() * -1;
+        hash += 31 * hash + getTo().hashCode();
+        return hash;
+    }
+
+    /**
+     * @return Une représentation affichable sur console de cet arc.
+     */
+    @Override
+    public String toString() {
+        return "[Arc] \"" + getFrom().getName() + "\" -> \"" + getTo().getName() + "\"";
     }
 }
