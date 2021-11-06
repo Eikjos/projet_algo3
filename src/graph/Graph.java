@@ -27,18 +27,16 @@ public interface Graph {
      * cas relié à un autre sommet du graphe par une relation. Si le sommet se
      * trouve déjà dans le graphe, une exception DuplicateVertex est levée.
      * @param x Le sommet à ajouter dans le graphe.
-     * @return true ou false selon si le sommet a bien été ajouté au graphe.
      */
-    boolean addVertex(Vertex x) throws DuplicateVertex;
+    void addVertex(Vertex x) throws DuplicateVertex;
 
     /**
      * Retire le sommet dénoté par x dans le graphe. Supprime également toutes
      * les relations impliquant ce sommet dans le graphe. Si le sommet ne se
      * trouve pas dans le graphe, une exception VertexNotFound est levée.
      * @param x Le sommet à retirer du graphe.
-     * @return true ou false selon si le sommet a bien été retiré du graphe.
      */
-    boolean removeVertex(Vertex x) throws VertexNotFound;
+    void removeVertex(Vertex x) throws VertexNotFound;
 
     /**
      * Indique si le sommet dénoté par x est contenu dans ce graphe.
@@ -74,9 +72,8 @@ public interface Graph {
      * deux sommets existe déjà, une exception DuplicateArc est levée.
      * @param x Le sommet de départ de l'arc.
      * @param y Le sommet d'arrivée de l'arc.
-     * @return true ou false selon si l'arc de x vers y a bien été créé.
      */
-    boolean createArc(Vertex x, Vertex y) throws DuplicateArc, VertexNotFound;
+    void createArc(Vertex x, Vertex y) throws DuplicateArc, VertexNotFound;
 
     /**
      * Supprime l'arc partant du sommet dénoté par x et pointant vers le sommet
@@ -86,17 +83,15 @@ public interface Graph {
      * deux sommets n'existe pas, une exception ArcNotFound est levée.
      * @param x Le sommet de départ de l'arc.
      * @param y Le sommet d'arrivée de l'arc.
-     * @return true ou false selon si l'arc de x vers y a bien été supprimé.
      */
-    boolean deleteArc(Vertex x, Vertex y) throws ArcNotFound, VertexNotFound;
+    void deleteArc(Vertex x, Vertex y) throws ArcNotFound, VertexNotFound;
 
     /**
      * Surcharge de deleteArc(Vertex, Vertex) prenant en charge un objet Arc
      * obtenu à l'aide de la méthode getArc.
      * @param a Arc à supprimer du graphe.
-     * @return true ou false selon si l'arc de x vers y a bien été supprimé.
      */
-    boolean deleteArc(Arc a) throws ArcNotFound, VertexNotFound;
+    void deleteArc(Arc a) throws ArcNotFound, VertexNotFound;
 
     /**
      * Indique si un arc partant du sommet dénoté par x et pointant vers le
