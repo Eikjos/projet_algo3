@@ -153,6 +153,11 @@ public interface Graph {
      */
     Set<Arc> arcSet();
 
+    /**
+     * @return Informations générales sur ce graphe.
+     */
+    String toString();
+
     //- Opérations générales
 
     /**
