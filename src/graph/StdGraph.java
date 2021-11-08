@@ -70,7 +70,8 @@ public class StdGraph implements Graph {
         if (!vertices.contains(x)) {
             throw new VertexNotFound(x);
         }
-        for (Iterator<Arc> it = arcs.iterator(); it.hasNext();) {
+        Iterator<Arc> it = arcs.iterator();
+        while (it.hasNext()) {
             Arc a = it.next();
             if (a.isImplied(x)) {
                 it.remove();
