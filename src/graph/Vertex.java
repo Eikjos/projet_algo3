@@ -1,5 +1,7 @@
 package graph;
 
+import util.Constants;
+
 /**
  * Le sommet d'un graphe représente un élément contenu par ce dernier. Celui-ci
  * est identifiable par un nom, récupérable via la méthode getName() et on
@@ -8,7 +10,7 @@ package graph;
  * Un sommet peut également contenir des métadonnées supplémentaires en
  * fonction de l'implémentation qui en est réalisée.
  */
-abstract public class Vertex implements Comparable<Vertex> {
+public abstract class Vertex implements Comparable<Vertex> {
 
     //- REQUÊTES
 
@@ -48,7 +50,7 @@ abstract public class Vertex implements Comparable<Vertex> {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += 31 * hash + getName().hashCode();
+        hash += Constants.HASH_MULTIPLIER * hash + getName().hashCode();
         return hash;
     }
 

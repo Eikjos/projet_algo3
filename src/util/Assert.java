@@ -1,6 +1,8 @@
 package util;
 
-public class Assert {
+public final class Assert {
+    private Assert() {
+    }
 
     /**
      * Méthode utilitaire simplifiant la vérification de pré-conditions. Si la

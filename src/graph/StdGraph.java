@@ -142,7 +142,8 @@ public class StdGraph implements Graph {
      * @param y Le sommet d'arrivée de l'arc.
      */
     @Override
-    public void createArc(Vertex x, Vertex y) throws DuplicateArc, VertexNotFound {
+    public void createArc(Vertex x, Vertex y)
+            throws DuplicateArc, VertexNotFound {
         Assert.check(x != null, "x must not be null");
         Assert.check(y != null, "y must not be null");
         if (!vertices.contains(x)) {
@@ -169,7 +170,8 @@ public class StdGraph implements Graph {
      * @param y Le sommet d'arrivée de l'arc.
      */
     @Override
-    public void deleteArc(Vertex x, Vertex y) throws ArcNotFound, VertexNotFound {
+    public void deleteArc(Vertex x, Vertex y)
+            throws ArcNotFound, VertexNotFound {
         Assert.check(x != null, "x must not be null");
         Assert.check(y != null, "y must not be null");
         if (!vertices.contains(x)) {
@@ -294,7 +296,9 @@ public class StdGraph implements Graph {
             @Override
             public int compare(Vertex o1, Vertex o2) {
                 int d = vertexFrom(o2).size() - vertexFrom(o1).size();
-                if (d != 0) return d;
+                if (d != 0) {
+                    return d;
+                }
                 return o1.compareTo(o2);
             }
         });

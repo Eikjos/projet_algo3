@@ -1,6 +1,7 @@
 package graph;
 
 import util.Assert;
+import util.Constants;
 
 /**
  * Un arc dans un graphe orienté est une relation entre deux sommets. Soit x et
@@ -99,8 +100,8 @@ public class Arc implements Comparable<Arc> {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash += 31 * hash + getFrom().hashCode() * -1;
-        hash += 31 * hash + getTo().hashCode();
+        hash += Constants.HASH_MULTIPLIER * hash + getFrom().hashCode() * -1;
+        hash += Constants.HASH_MULTIPLIER * hash + getTo().hashCode();
         return hash;
     }
 
@@ -109,6 +110,7 @@ public class Arc implements Comparable<Arc> {
      */
     @Override
     public String toString() {
-        return "[Arc] \"" + getFrom().getName() + "\" -> \"" + getTo().getName() + "\"";
+        return "[Arc] \"" + getFrom().getName() + "\" -> \""
+                + getTo().getName() + "\"";
     }
 }
