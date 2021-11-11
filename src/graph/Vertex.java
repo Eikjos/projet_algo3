@@ -61,4 +61,10 @@ public abstract class Vertex implements Comparable<Vertex> {
     public String toString() {
         return "[Vertex] " + getName();
     }
+
+    /**
+     * Syntaxe pour pouvoir sauveagerder le fichier.
+     */
+    public abstract String serialize();
+
 }
