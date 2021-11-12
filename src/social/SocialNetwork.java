@@ -49,14 +49,14 @@ public class SocialNetwork {
     // REQUETES
 
     /**
-     * Le nom de ce réseau social.
+     * @return Le nom de ce réseau social.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * L'ensemble des utilisateurs du réseau social.
+     * @return Un ensemble ordonné des utilisateurs de ce réseau social.
      */
     public Set<User> getUser() {
         Set<User> result = new TreeSet<User>();
@@ -69,14 +69,14 @@ public class SocialNetwork {
     }
 
     /**
-     * Le nombre d'utilisateur du réseau social.
+     * @return Le nombre d'utilisateurs de ce réseau social.
      */
     public int getUserNb() {
         return getUser().size();
     }
 
     /**
-     * L'ensemble des pages sur le réseau social.
+     * @return Un ensemble ordonné des pages de ce réseau social.
      */
     public Set<Page> getPage() {
         Set<Page> result = new TreeSet<Page>();
@@ -89,14 +89,14 @@ public class SocialNetwork {
     }
 
     /**
-     * Le nombre de Page dans le réseau social.
+     * @return Le nombre de pages de ce réseau social.
      */
     public int getPageNb() {
         return getPage().size();
     }
 
     /**
-     * L'âge moyen des utilisateurs du réseau social.
+     * @return L'âge moyen (entier) des utilisateurs de ce réseau social.
      */
     public int getAverageAge() {
         int sum = 0;
@@ -107,7 +107,8 @@ public class SocialNetwork {
     }
 
     /**
-     * L'ensemble des utilisateurs qui sont administrateurs de page.
+     * @return Un ensemble ordonnées des administrateurs de pages sur ce réseau
+     * social.
      */
     public Set<User> getAdmins() {
         Set<User> result = new TreeSet<User>();
@@ -122,7 +123,8 @@ public class SocialNetwork {
     }
 
     /**
-     * L'ensemble des utilisateurs qui sont administrateurs de la page p.
+     * @return Un ensemble ordonné des administrateurs de la page dénotée par
+     * p.
      * @pre
      *      p != null
      */
@@ -138,7 +140,8 @@ public class SocialNetwork {
     }
 
     /**
-     * L'ensemble des utilisateurs qui aiment la page p.
+     * @return Un ensemble ordonné des utilisateurs aimant la page dénotée par
+     * p.
      * @pre
      *      p != null
      */
@@ -154,7 +157,8 @@ public class SocialNetwork {
     }
 
     /**
-     * L'ensemble des followers de l'utilisateurs de u.
+     * @return Un ensemble ordonné des utilisateurs suivant l'utilisateur
+     * dénoté par u.
      * @pre
      *      u != null
      */
@@ -170,7 +174,8 @@ public class SocialNetwork {
     }
 
     /**
-     * L'ensemble des utilisateurs suivis par l'utilisateurs u.
+     * @return Un ensemble ordonné des utilisateurs suivis par l'utilisateur
+     * dénoté par u.
      * @pre
      *      u != null
      */
@@ -186,7 +191,8 @@ public class SocialNetwork {
     }
 
     /**
-     * L'ensemble des pages liker par l'utilisateur u.
+     * @return Un ensemble ordonné des pages aimées par l'utilisateur dénoté
+     * par u.
      * @pre
      *      u != null
      */
@@ -202,7 +208,8 @@ public class SocialNetwork {
     }
 
     /**
-     * L'ensemble des pages où l'utilisateur u est admins.
+     * @return Un ensemble ordonné des pages où l'utilisateur dénoté par u est
+     * administrateur.
      * @pre
      *      u != null
      */
@@ -218,7 +225,9 @@ public class SocialNetwork {
     }
 
     /**
-     * Permet de repérer un élément du réseau social par son nom.
+     * Recherche dans le graphe un sommet ayant pour clé (nom pour une page,
+     * "nom prénom" pour un utilisateur) la chaine dénotée par n.
+     * @return Le sommet ayant pour clé la chaine dénoté par n, null sinon.
      */
     public Vertex getVertexByName(String n) {
         return graphe.findVertexByName(n);
