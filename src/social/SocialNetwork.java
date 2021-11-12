@@ -302,12 +302,15 @@ public class SocialNetwork {
         }
         // sauvegarde les liens sous forme de liste d'adjacence
         for (Vertex v : graphe.vertexSet()) {
-            String line = "A:" + v.getName();
-            for (Vertex u : graphe.vertexFrom(v)) {
-                line = line.concat(":" + u.getName());
+            Set<Vertex> out = graphe.vertexFrom(v);
+            if (out.size() > 0) {
+                String line = "A:" + v.getName();
+                for (Vertex u : graphe.vertexFrom(v)) {
+                    line = line.concat(":" + u.getName());
+                }
+                output.write(line);
+                output.newLine();
             }
-            output.write(line);
-            output.newLine();
         }
         output.close();
     }
