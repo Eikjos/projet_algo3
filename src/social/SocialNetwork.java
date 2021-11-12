@@ -6,6 +6,8 @@ import graph.Vertex;
 import graph.exceptions.VertexNotFound;
 import graph.exceptions.DuplicateArc;
 import graph.exceptions.DuplicateVertex;
+import social.accounts.Page;
+import social.accounts.User;
 import util.Assert;
 
 import java.io.*;

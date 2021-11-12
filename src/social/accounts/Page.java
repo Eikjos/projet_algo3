@@ -1,4 +1,4 @@
-package social;
+package social.accounts;
 
 import graph.Vertex;
 import util.Assert;
