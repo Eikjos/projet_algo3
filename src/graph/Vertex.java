@@ -63,7 +63,8 @@ public abstract class Vertex implements Comparable<Vertex> {
     }
 
     /**
-     * Syntaxe pour pouvoir sauveagerder le fichier.
+     * @return Une représentation automatisable de ce sommet pouvant être
+     * utilisée à des fins de sauvegarde de l'information.
      */
     public abstract String serialize();
 
