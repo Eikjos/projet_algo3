@@ -1,13 +1,14 @@
 import graph.exceptions.DuplicateVertex;
 import graph.exceptions.VertexNotFound;
 import social.SocialNetwork;
-import social.Page;
-import social.User;
+import social.accounts.Page;
+import social.accounts.User;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class Main {
+public final class Main {
+    private Main() {
+    }
 
     /**
      * Démarre l'application de visualisation d'un réseau social représenté à
@@ -32,7 +33,7 @@ public class Main {
             social.like(v, q);
             social.follow(x, u);
             social.follow(x, v);
-            social.addAmin(p, u);
+            social.addAdmin(p, u);
             System.out.println(social.getAdmins());
             System.out.println(social.getAdminsOf(p));
             System.out.println(social.getFollow(x));
