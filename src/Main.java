@@ -22,6 +22,12 @@ public final class Main {
             social.createUser("Biojout", "Kévin", 20);
             social.createUser("Hamelin", "Thomas", 20);
             social.createUser("Ficker", "Lucas", 20);
+            social.createUser("Fouquer", "Mattéo", 20);
+            social.createUser("Lozach", "Lucas", 21);
+            social.createUser("Merieau", "Lucas", 20);
+            social.createUser("Le Bas", "Nathan", 19);
+            social.createUser("Briet", "Romain", 19);
+            social.createUser("La meuf de", "Romain", 18);
             social.createPage("La page de CH");
             social.createPage("La page du salami");
             User u = (User) social.getVertexByName("Biojout Kévin");
@@ -42,11 +48,12 @@ public final class Main {
             social.save();
             System.out.println("Init");
             SocialNetwork social2 = SocialNetwork.init(new File(social.getName() + ".txt"));
-            System.out.println(social.getAdmins());
-            System.out.println(social.getAdminsOf(p));
-            System.out.println(social.getFollow(x));
-            System.out.println(social.getFollower(v));
-            System.out.println(social.getPageOfAdmin(u));
+            System.out.println(social2.getAdmins());
+            System.out.println(social2.getAdminsOf(p));
+            System.out.println(social2.getFollow(x));
+            System.out.println(social2.getFollower(v));
+            System.out.println(social2.getPageOfAdmin(u));
+            System.out.println(social2.getUser());
         } catch (DuplicateVertex e) {
             throw new AssertionError("duplication de sommet");
         } catch (VertexNotFound e) {
