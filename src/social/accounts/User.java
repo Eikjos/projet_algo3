@@ -62,14 +62,14 @@ public class User extends Vertex {
     /**
      * Donne le nom de famille de l'utilisateur.
      */
-    public String getLastname() {
+    public String getLastName() {
         return lastname;
     }
 
     /**
      * Donne le prénom de l'utilisateur.
      */
-    public String getFirstname() {
+    public String getFirstName() {
         return firstname;
     }
 
@@ -77,18 +77,18 @@ public class User extends Vertex {
      * Permte d'identifier un utilisateur selon son nom et son prénom.
      */
     public String getName() {
-        return getLastname() + " " + getFirstname();
+        return getLastName() + " " + getFirstName();
     }
 
     /**
      * Permet de sauvegarder l'utlisateur.
      */
     public String serialize() {
-        return "U:" + getLastname() + ":" + getFirstname() + ":" + getAge();
+        return "U:" + getLastName() + ":" + getFirstName() + ":" + getAge();
     }
 
     @Override
     public String toString() {
-        return getFirstname() + " " + getLastname() + " " + getAge() + " ans";
+        return getLastName() + " " + getFirstName() + " - " + getAge() + " ans";
     }
 }
