@@ -320,8 +320,8 @@ public class SocialNetwork {
             throws IOException, VertexNotFound, DuplicateArc, DuplicateVertex {
         BufferedReader input = new BufferedReader(new FileReader(f));
         SocialNetwork social = new SocialNetwork(f.getName());
-        String line = input.readLine();
-        while (line != null) {
+        String line;
+        while ((line = input.readLine()) != null) {
             if (line.charAt(0) == 'U') {
                 String[] splitted = line.split(":");
                 if (splitted.length != 4) {
@@ -354,7 +354,6 @@ public class SocialNetwork {
                     }
                 }
             }
-            line = input.readLine();
         }
         input.close();
         return social;
