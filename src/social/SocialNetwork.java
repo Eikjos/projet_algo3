@@ -58,7 +58,7 @@ public class SocialNetwork {
     /**
      * @return Un ensemble ordonné des utilisateurs de ce réseau social.
      */
-    public Set<User> getUser() {
+    public Set<User> getUsers() {
         Set<User> result = new TreeSet<User>();
         for (Vertex s : graphe.vertexSet()) {
             if (s instanceof User) {
@@ -71,14 +71,14 @@ public class SocialNetwork {
     /**
      * @return Le nombre d'utilisateurs de ce réseau social.
      */
-    public int getUserNb() {
-        return getUser().size();
+    public int getUserCount() {
+        return getUsers().size();
     }
 
     /**
      * @return Un ensemble ordonné des pages de ce réseau social.
      */
-    public Set<Page> getPage() {
+    public Set<Page> getPages() {
         Set<Page> result = new TreeSet<Page>();
         for (Vertex s : graphe.vertexSet()) {
             if (s instanceof Page) {
@@ -91,8 +91,8 @@ public class SocialNetwork {
     /**
      * @return Le nombre de pages de ce réseau social.
      */
-    public int getPageNb() {
-        return getPage().size();
+    public int getPageCount() {
+        return getPages().size();
     }
 
     /**
@@ -100,10 +100,10 @@ public class SocialNetwork {
      */
     public int getAverageAge() {
         int sum = 0;
-        for (User u : getUser()) {
+        for (User u : getUsers()) {
             sum = sum + u.getAge();
         }
-        return sum / getUserNb();
+        return sum / getUserCount();
     }
 
     /**
@@ -112,7 +112,7 @@ public class SocialNetwork {
      */
     public Set<User> getAdmins() {
         Set<User> result = new TreeSet<User>();
-        for (User u : getUser()) {
+        for (User u : getUsers()) {
             for (Vertex v : graphe.vertexTo(u)) {
                 if (v instanceof Page) {
                     result.add(u);
@@ -145,7 +145,7 @@ public class SocialNetwork {
      * @pre
      *      p != null
      */
-    public Set<User> getLiker(Page p) {
+    public Set<User> getLikers(Page p) {
         Assert.check(p != null, "p is null");
         Set<User> result = new TreeSet<User>();
         for (Vertex v : graphe.vertexTo(p)) {
@@ -162,7 +162,7 @@ public class SocialNetwork {
      * @pre
      *      u != null
      */
-    public Set<User> getFollower(User u) {
+    public Set<User> getFollowers(User u) {
         Assert.check(u != null, "u is null");
         Set<User> result = new TreeSet<User>();
         for (Vertex v : graphe.vertexTo(u)) {
@@ -179,7 +179,7 @@ public class SocialNetwork {
      * @pre
      *      u != null
      */
-    public Set<User> getFollow(User u) {
+    public Set<User> getFollowing(User u) {
         Assert.check(u != null, "u is null");
         Set<User> result = new TreeSet<User>();
         for (Vertex v : graphe.vertexFrom(u)) {
@@ -196,7 +196,7 @@ public class SocialNetwork {
      * @pre
      *      u != null
      */
-    public Set<Page> getLike(User u) {
+    public Set<Page> getLikes(User u) {
         Assert.check(u != null, "u is null");
         Set<Page> result = new TreeSet<Page>();
         for (Vertex v : graphe.vertexFrom(u)) {
@@ -213,7 +213,7 @@ public class SocialNetwork {
      * @pre
      *      u != null
      */
-    public Set<Page> getPageOfAdmin(User u) {
+    public Set<Page> getPagesOfAdmin(User u) {
         Assert.check(u != null, "u is null");
         Set<Page> result = new TreeSet<Page>();
         for (Vertex v : graphe.vertexTo(u)) {
