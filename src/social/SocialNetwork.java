@@ -267,7 +267,7 @@ public class SocialNetwork {
      *      getAdminsOf(p).contains(u)
      *      getAdmins().contains(u)
      */
-    public void addAmin(Page p, User u) throws VertexNotFound, DuplicateArc {
+    public void addAdmin(Page p, User u) throws VertexNotFound, DuplicateArc {
         Assert.check(u != null, "u is null");
         Assert.check(p != null, "p is null");
         graphe.createArc(p, u);
@@ -347,7 +347,7 @@ public class SocialNetwork {
                         }
                     } else if (u instanceof Page) {
                         if (v instanceof User) {
-                            social.addAmin((Page) u, (User) v);
+                            social.addAdmin((Page) u, (User) v);
                         } else if (v instanceof Page) {
                             throw new AssertionError("Impossible lien entre 2 pages");
                         }
