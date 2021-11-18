@@ -79,7 +79,7 @@ public class NewWindow {
     private String getFollowing(User u) {
         StringBuilder sb = new StringBuilder();
         sb.append("<html>Following : <br>");
-        for (User t : model.getFollowing(u)) {
+        for (User t : model.getFollow(u)) {
             sb.append(t.toString()).append(" <br>");
         }
         sb.append("<html>");

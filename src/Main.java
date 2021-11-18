@@ -3,6 +3,9 @@ import graph.exceptions.VertexNotFound;
 import social.SocialNetwork;
 import social.accounts.Page;
 import social.accounts.User;
+import gui.GUI;
+
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -17,7 +20,7 @@ public final class Main {
      */
     public static void main(String[] args) {
         // TEST
-        SocialNetwork social = new SocialNetwork("test");
+        final SocialNetwork social = new SocialNetwork("test");
         try {
             social.createUser("Biojout", "Kévin", 20);
             social.createUser("Hamelin", "Thomas", 20);
@@ -43,17 +46,17 @@ public final class Main {
             System.out.println(social.getAdmins());
             System.out.println(social.getAdminsOf(p));
             System.out.println(social.getFollow(x));
-            System.out.println(social.getFollower(v));
-            System.out.println(social.getPageOfAdmin(u));
+            System.out.println(social.getFollowers(v));
+            System.out.println(social.getPagesOfAdmin(u));
             social.save();
             System.out.println("Init");
             SocialNetwork social2 = SocialNetwork.init(new File(social.getName() + ".txt"));
             System.out.println(social2.getAdmins());
             System.out.println(social2.getAdminsOf(p));
             System.out.println(social2.getFollow(x));
-            System.out.println(social2.getFollower(v));
-            System.out.println(social2.getPageOfAdmin(u));
-            System.out.println(social2.getUser());
+            System.out.println(social2.getFollowers(v));
+            System.out.println(social2.getPagesOfAdmin(u));
+            System.out.println(social2.getUsers());
         } catch (DuplicateVertex e) {
             throw new AssertionError("duplication de sommet");
         } catch (VertexNotFound e) {
@@ -63,6 +66,12 @@ public final class Main {
         } catch (Exception e) {
             throw new AssertionError("problème des testes");
         }
-
+        System.out.println(social.Pagerank());
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new GUI(social.getName(), social).display();
+            }
+        });
     }
 }

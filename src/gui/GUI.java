@@ -42,6 +42,7 @@ public class GUI {
 
     private JButton save;
     private JButton loadSave;
+    
 
     private static String names;
 
@@ -99,7 +100,6 @@ public class GUI {
         save = new JButton("Save");
         loadSave = new JButton("Load from file");
 
-
     }
 
     private void placeComponents() {
@@ -143,6 +143,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     model.createUser(firstNameUser.getText(), lastNameUser.getText(), Integer.parseInt(age.getText()));
+                    usersStat.setText(usersStat());
                 } catch (DuplicateVertex ex) {
                     ex.printStackTrace();
                 }
@@ -155,6 +156,7 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     model.createPage(pageName.getText());
+                    pagesStat.setText(pagesStat());
                 } catch (DuplicateVertex ex) {
                     ex.printStackTrace();
                 }
@@ -208,7 +210,6 @@ public class GUI {
 
             }
         });
-
     }
 
     private void refresh() {
@@ -219,7 +220,7 @@ public class GUI {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new GUI(names).display();
+                new GUI("facebook").display();
             }
         });
     }

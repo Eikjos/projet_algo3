@@ -16,13 +16,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Représente le système de réseau social avec un graphe.
  */
-public class SocialNetwork {
+public class SocialNetwork extends Observable {
 
     // ATTRIBUT
 
@@ -101,9 +100,13 @@ public class SocialNetwork {
     }
 
     /**
+     * @pre
+     *      getUserCount() > 0
      * @return L'âge moyen (entier) des utilisateurs de ce réseau social.
      */
     public int getAverageAge() {
+        Assert.check(getUserCount() > 0,
+                "impossible pas d'utilisateur");
         int sum = 0;
         for (User u : getUsers()) {
             sum = sum + u.getAge();
@@ -184,7 +187,7 @@ public class SocialNetwork {
      * @pre
      *      u != null
      */
-    public Set<User> getFollowing(User u) {
+    public Set<User> getFollow(User u) {
         Assert.check(u != null, "u is null");
         Set<User> result = new TreeSet<User>();
         for (Vertex v : graphe.vertexFrom(u)) {
@@ -374,5 +377,58 @@ public class SocialNetwork {
         }
         input.close();
         return social;
+    }
+
+    /**
+     * Donne un ensemble trier selon leurs pagerank.
+     * @pre
+     *     graphe.vertexSet().size() > 0
+     * @return le sommet le plus influent.
+     */
+    public Set<Vertex> Pagerank() {
+        Assert.check(graphe.vertexCount() > 0,
+                "impossible le graphe est vide");
+        HashMap<Vertex, Double> PR = new HashMap<Vertex, Double>();
+        // INITIALISATION DU PAGERANK POUR TOUT LES SOMMETS
+        for (Vertex v : graphe.vertexSet()) {
+            PR.put(v, 1.0);
+        }
+        // CALCUL DU PAGERANK
+        int i = 0;
+        final int valeur = 100;
+        final double f1 = 0.15;
+        final double f2 = 0.85;
+        while (i <= valeur) {
+            for (Vertex v : graphe.vertexSet()) {
+                Double value = PR.get(v);
+                // SOMME DES VOISINS ENTRANTS DE V.
+                double sum = 0.0;
+                for (Vertex e : graphe.vertexTo(v)) {
+                    sum = sum + (PR.get(e) / graphe.vertexFrom(e).size());
+                }
+                value = (f1 / graphe.vertexCount()) + f2 * sum;
+                PR.put(v, value);
+                ++i;
+            }
+        }
+        // Tri de la map selon le valeur du pagerank
+        return sortedByValue(PR).keySet();
+    }
+
+    // OUTILS
+    private HashMap<Vertex, Double> sortedByValue(HashMap<Vertex, Double> map) {
+        List<Map.Entry<Vertex, Double>> list =
+                new LinkedList<Map.Entry<Vertex, Double>>(map.entrySet());
+        Collections.sort(list, new Comparator<Map.Entry<Vertex, Double>>() {
+            @Override
+            public int compare(Map.Entry<Vertex, Double> o1, Map.Entry<Vertex, Double> o2) {
+                return (o2.getValue().compareTo(o1.getValue()));
+            }
+        });
+        HashMap<Vertex, Double> sorted_map = new LinkedHashMap<Vertex, Double>();
+        for (Map.Entry<Vertex, Double> entry : list) {
+            sorted_map.put(entry.getKey(), entry.getValue());
+        }
+        return sorted_map;
     }
 }
