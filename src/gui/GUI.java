@@ -42,7 +42,7 @@ public class GUI {
 
     private JButton save;
     private JButton loadSave;
-    
+
 
     private static String names;
 

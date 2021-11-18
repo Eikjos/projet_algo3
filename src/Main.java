@@ -7,6 +7,7 @@ import gui.GUI;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public final class Main {
@@ -64,6 +65,7 @@ public final class Main {
         } catch (IOException e) {
             throw new AssertionError("problème d'entrée sortie");
         } catch (Exception e) {
+            System.out.println(e);
             throw new AssertionError("problème des testes");
         }
         System.out.println(social.Pagerank());

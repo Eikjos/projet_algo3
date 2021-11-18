@@ -3,6 +3,7 @@ package social;
 import graph.StdGraph;
 import graph.Graph;
 import graph.Vertex;
+import graph.exceptions.ArcNotFound;
 import graph.exceptions.VertexNotFound;
 import graph.exceptions.DuplicateArc;
 import graph.exceptions.DuplicateVertex;
@@ -262,6 +263,32 @@ public class SocialNetwork extends Observable {
     }
 
     /**
+     * Supprime l'utilisateur reconnu par son nom (name).
+     * @pre
+     *      name != null
+     * @post
+     *      !getUsers().contains(getVertexByName(name))
+     */
+    public void removeUser(String name) throws VertexNotFound {
+        Assert.check(name != null,
+                "name is null");
+        graphe.removeVertex(getVertexByName(name));
+    }
+
+    /**
+     * Supprime la page de nom name du réseau social.
+     * @pre
+     *      name != null
+     * @post
+     *      !getPages().contains(getVertexByName(name))
+     */
+    public void removePage(String name) throws VertexNotFound {
+        Assert.check(name != null,
+                "name is null");
+        graphe.removeVertex(getVertexByName(name));
+    }
+
+    /**
      *  L'utilisateur u aime la page p.
      * @pre
      *      u != null
@@ -273,6 +300,15 @@ public class SocialNetwork extends Observable {
         Assert.check(u != null, "u is null");
         Assert.check(p != null, "p is null");
         graphe.createArc(u, p);
+    }
+
+    /**
+     * Supprime le like de l'utilisateur u sur la page p.
+     */
+    public void remvoveLike(User u, Page p) throws ArcNotFound, VertexNotFound {
+        Assert.check(u != null, "u is null");
+        Assert.check(p != null, "p is null");
+        graphe.deleteArc(u, p);
     }
 
     /**
@@ -291,6 +327,18 @@ public class SocialNetwork extends Observable {
     }
 
     /**
+     * Supprime l'utilisateur u comme admin de la page p.
+     * @pre
+     *      p != null
+     *      u != null
+     */
+    public void removeAdmin(Page p, User u) throws ArcNotFound, VertexNotFound {
+        Assert.check(u != null, "u is null");
+        Assert.check(p != null, "p is null");
+        graphe.deleteArc(p, u);
+    }
+
+    /**
      * L'utilisateur u suit l'utilisateur v.
      * @pre
      *      u != null
@@ -303,6 +351,18 @@ public class SocialNetwork extends Observable {
         Assert.check(u != null, "u is null");
         Assert.check(v != null, "v is null");
         graphe.createArc(u, v);
+    }
+
+    /**
+     * Retire le follow de l'utilisateur u vers l'utilisateur p.
+     * @pre
+     *      u != null
+     *      p != null
+     */
+    public void removeFollow(User u, User v) throws ArcNotFound, VertexNotFound {
+        Assert.check(u != null, "u is null");
+        Assert.check(v != null, "v is null");
+        graphe.deleteArc(u, v);
     }
 
     /**
@@ -339,7 +399,9 @@ public class SocialNetwork extends Observable {
     public static SocialNetwork init(File f)
             throws IOException, VertexNotFound, DuplicateArc, DuplicateVertex {
         BufferedReader input = new BufferedReader(new FileReader(f));
-        SocialNetwork social = new SocialNetwork(f.getName());
+        System.out.println(f.getName());
+        String name = f.getName().split("\\.")[0];
+        SocialNetwork social = new SocialNetwork(name);
         String line;
         while ((line = input.readLine()) != null) {
             if (line.charAt(0) == 'U') {
