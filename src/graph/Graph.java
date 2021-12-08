@@ -171,11 +171,13 @@ public interface Graph {
     Set<Vertex> vertexTo(Vertex x);
 
     /**
-     * @param x Le sommet à partir duquel calculer les distances.
-     * @return Calcule les distances minimales pour chaque sommet à partir du
-     * sommet dénoté par x. On considère qu'il n'existe pas de chemin entre la
-     * source dénotée par x et un sommet du graphe si la distance est égale à
-     * Integer.MAX_VALUE.
+     * Calcule pour chaque sommet du graphe la distance du plus court chemin le
+     * séparant du sommet dénoté par x. Par définition, dist(x, x) == 0. Par
+     * définition, si il n'existe pas de chemin reliant x à un sommet y
+     * quelconque, alors dist(x, y) == Integer.MAX_VALUE.
+     * @param x Sommet source à partir duquel calculer les distances.
+     * @return Une Map liant chaque sommet du graphe à sa distance le séparant
+     * du sommet dénoté par x.
      */
     Map<Vertex, Integer> shortestPathsFrom(Vertex x);
 
