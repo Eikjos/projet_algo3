@@ -5,6 +5,7 @@ import graph.exceptions.DuplicateArc;
 import graph.exceptions.DuplicateVertex;
 import graph.exceptions.VertexNotFound;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -168,6 +169,15 @@ public interface Graph {
      * par x.
      */
     Set<Vertex> vertexTo(Vertex x);
+
+    /**
+     * @param x Le sommet à partir duquel calculer les distances.
+     * @return Calcule les distances minimales pour chaque sommet à partir du
+     * sommet dénoté par x. On considère qu'il n'existe pas de chemin entre la
+     * source dénotée par x et un sommet du graphe si la distance est égale à
+     * Integer.MAX_VALUE.
+     */
+    Map<Vertex, Integer> shortestPathsFrom(Vertex x);
 
     /**
      * Réinitialise ce graphe : retire tous les sommets et supprime toutes les

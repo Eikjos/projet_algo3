@@ -6,9 +6,13 @@ import graph.exceptions.DuplicateVertex;
 import graph.exceptions.VertexNotFound;
 import util.Assert;
 
+import java.util.ArrayDeque;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -351,6 +355,44 @@ public class StdGraph implements Graph {
             }
         }
         return set;
+    }
+
+    /**
+     * @param x Le sommet à partir duquel calculer les distances.
+     * @return Calcule les distances minimales pour chaque sommet à partir du
+     * sommet dénoté par x. On considère qu'il n'existe pas de chemin entre la
+     * source dénotée par x et un sommet du graphe si la distance est égale à
+     * Integer.MAX_VALUE.
+     */
+    public Map<Vertex, Integer> shortestPathsFrom(Vertex x) {
+        class DistVertPair {
+            public final Vertex vertex;
+            public final int distance;
+            DistVertPair(Vertex v, int d) {
+                vertex = v;
+                distance = d;
+            }
+        }
+        Map<Vertex, Integer> distances = new HashMap<Vertex, Integer>();
+        for (Vertex y : vertexSet()) {
+            distances.put(y, Integer.MAX_VALUE);
+        }
+        distances.put(x, 0);
+        Queue<DistVertPair> pqueue = new ArrayDeque<DistVertPair>();
+        pqueue.add(new DistVertPair(x, 0));
+        while (!pqueue.isEmpty()) {
+            DistVertPair p = pqueue.poll();
+            int xDistance = distances.get(p.vertex);
+            for (Vertex y : vertexFrom(p.vertex)) {
+                int yDistance = distances.get(y);
+                if (yDistance > xDistance + 1) {
+                    yDistance = xDistance + 1;
+                    distances.put(y, yDistance);
+                    pqueue.offer(new DistVertPair(y, yDistance));
+                }
+            }
+        }
+        return distances;
     }
 
     /**
