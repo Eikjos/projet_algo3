@@ -17,7 +17,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Représente le système de réseau social avec un graphe.
@@ -370,22 +379,20 @@ public class SocialNetwork extends Observable {
      * dans un fichier getName().txt
      */
     public void save() throws IOException {
-        BufferedWriter output = new BufferedWriter(new FileWriter(getName() + ".txt"));
-        // sauvegarde tout les sommets du graphe.
+        String filename = getName() + ".txt";
+        BufferedWriter output = new BufferedWriter(new FileWriter(filename));
         for (Vertex v : graphe.vertexSet()) {
-            String line = v.serialize();
-            output.write(line);
+            output.write(v.serialize());
             output.newLine();
         }
-        // sauvegarde les liens sous forme de liste d'adjacence
         for (Vertex v : graphe.vertexSet()) {
             Set<Vertex> out = graphe.vertexFrom(v);
             if (out.size() > 0) {
-                String line = "A:" + v.getName();
+                StringBuilder line = new StringBuilder("A:" + v.getName());
                 for (Vertex u : graphe.vertexFrom(v)) {
-                    line = line.concat(":" + u.getName());
+                    line.append(":").append(u.getName());
                 }
-                output.write(line);
+                output.write(line.toString());
                 output.newLine();
             }
         }
@@ -393,48 +400,44 @@ public class SocialNetwork extends Observable {
     }
 
     /**
-     * Permet d'initialiser le social à partir d'une sauvegarde à partie d'un fichier.
-     * Le nom du réseau social est le nom du fichier
+     * Permet d'initialiser le social à partir d'un fichier texte.
+     * Le nom du réseau social correspond au nom du fichier chargé sans son
+     * extension.
      */
     public static SocialNetwork init(File f)
             throws IOException, VertexNotFound, DuplicateArc, DuplicateVertex {
         BufferedReader input = new BufferedReader(new FileReader(f));
-        System.out.println(f.getName());
-        String name = f.getName().split("\\.")[0];
+        String name = f.getName().lastIndexOf('.') > -1
+                ? f.getName().substring(0, f.getName().lastIndexOf('.'))
+                : f.getName();
         SocialNetwork social = new SocialNetwork(name);
         String line;
         while ((line = input.readLine()) != null) {
-            if (line.charAt(0) == 'U') {
-                String[] splitted = line.split(":");
-                if (splitted.length != 4) {
-                    throw new AssertionError("ligne non reconnu");
-                }
-                social.createUser(splitted[1], splitted[2], Integer.parseInt(splitted[3]));
-            } else if (line.charAt(0) == 'P') {
-                String[] splitted = line.split(":");
-                if (splitted.length != 2) {
-                    throw new AssertionError("ligne non reconnu");
-                }
-                social.createPage(splitted[1]);
-            } else if (line.charAt(0) == 'A') {
-                String[] splitted = line.split(":");
-                Vertex u = social.graphe.findVertexByName(splitted[1]);
-                for (int i = 2; i < splitted.length; ++i) {
-                    Vertex v = social.graphe.findVertexByName(splitted[i]);
-                    if (u instanceof User) {
-                        if (v instanceof User)  {
-                            social.follow((User) u, (User) v);
-                        } else if (v instanceof Page) {
-                            social.like((User) u, (Page) v);
-                        }
-                    } else if (u instanceof Page) {
-                        if (v instanceof User) {
-                            social.addAdmin((Page) u, (User) v);
-                        } else if (v instanceof Page) {
-                            throw new AssertionError("Impossible lien entre 2 pages");
+            String[] comp = line.split(":");
+            switch (comp[0].charAt(0)) {
+                case 'U':
+                    social.createUser(comp[1], comp[2],
+                            Integer.parseInt(comp[3]));
+                    break;
+                case 'P':
+                    social.createPage(comp[1]);
+                    break;
+                case 'A':
+                    Vertex source = social.getVertexByName(comp[1]);
+                    for (int i = 2; i < comp.length; ++i) {
+                        Vertex dest = social.getVertexByName(comp[i]);
+                        if (source instanceof User) {
+                            if (dest instanceof User) {
+                                social.follow((User) source, (User) dest);
+                            } else {
+                                social.like((User) source, (Page) dest);
+                            }
+                        } else {
+                            social.addAdmin((Page) source, (User) dest);
                         }
                     }
-                }
+                default:
+                    throw new AssertionError("Unrecognized: \"" + line + "\"");
             }
         }
         input.close();
@@ -442,12 +445,12 @@ public class SocialNetwork extends Observable {
     }
 
     /**
-     * Donne un ensemble trier selon leurs pagerank.
+     * Exécute l'algorithme de PageRank sur les comptes du réseau social.
      * @pre
-     *     graphe.vertexSet().size() > 0
-     * @return le sommet le plus influent.
+     *     graphe.vertexCount() > 0
+     * @return L'ensemble des sommets triés par leur influence décroissante.
      */
-    public Set<Vertex> Pagerank() {
+    public Set<Vertex> pageRank() {
         Assert.check(graphe.vertexCount() > 0,
                 "impossible le graphe est vide");
         HashMap<Vertex, Double> PR = new HashMap<Vertex, Double>();
@@ -462,7 +465,7 @@ public class SocialNetwork extends Observable {
         final double f2 = 0.85;
         while (i <= valeur) {
             for (Vertex v : graphe.vertexSet()) {
-                Double value = PR.get(v);
+                double value;
                 // SOMME DES VOISINS ENTRANTS DE V.
                 double sum = 0.0;
                 for (Vertex e : graphe.vertexTo(v)) {
@@ -483,14 +486,15 @@ public class SocialNetwork extends Observable {
                 new LinkedList<Map.Entry<Vertex, Double>>(map.entrySet());
         Collections.sort(list, new Comparator<Map.Entry<Vertex, Double>>() {
             @Override
-            public int compare(Map.Entry<Vertex, Double> o1, Map.Entry<Vertex, Double> o2) {
+            public int compare(Map.Entry<Vertex, Double> o1,
+                               Map.Entry<Vertex, Double> o2) {
                 return (o2.getValue().compareTo(o1.getValue()));
             }
         });
-        HashMap<Vertex, Double> sorted_map = new LinkedHashMap<Vertex, Double>();
+        HashMap<Vertex, Double> sortedMap = new LinkedHashMap<Vertex, Double>();
         for (Map.Entry<Vertex, Double> entry : list) {
-            sorted_map.put(entry.getKey(), entry.getValue());
+            sortedMap.put(entry.getKey(), entry.getValue());
         }
-        return sorted_map;
+        return sortedMap;
     }
 }
