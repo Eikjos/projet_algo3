@@ -1,5 +1,6 @@
 package gui;
 
+import graph.Vertex;
 import graph.exceptions.DuplicateArc;
 import graph.exceptions.DuplicateVertex;
 import graph.exceptions.VertexNotFound;
@@ -37,8 +38,12 @@ public class GUI {
     private JLabel usersStat;
     private JLabel pagesStat;
 
+    private JLabel pagerank;
+
     private JTextField searchName;
     private JButton search;
+
+    private JButton likeFollow;
 
     private JButton save;
     private JButton loadSave;
@@ -74,7 +79,7 @@ public class GUI {
     }
 
     private void createView() {
-        final int frameWidth = 1500;
+        final int frameWidth = 1750;
         final int frameHeight = 1000;
 
         mainFrame = new JFrame(names);
@@ -93,9 +98,13 @@ public class GUI {
         usersStat = new JLabel(usersStat());
         pagesStat = new JLabel(pagesStat());
 
+        pagerank = new JLabel(pageRankAsString());
+
         searchName = new JTextField("Name");
         searchName.setColumns(10);
         search = new JButton("Search");
+
+        likeFollow = new JButton("Like pages or follow other users");
 
         save = new JButton("Save");
         loadSave = new JButton("Load from file");
@@ -103,29 +112,90 @@ public class GUI {
     }
 
     private void placeComponents() {
-        JPanel p = new JPanel(); {
-            p.add(firstNameUser);
-            p.add(lastNameUser);
-            p.add(age);
-            p.add(addUser);
-            p.add(pageName);
-            p.add(addPage);
+        JPanel q = new JPanel(new GridLayout(3, 5)); {
+            JPanel p = new JPanel(new BorderLayout()); {
+                p.add(users, BorderLayout.CENTER);
+            }
+            q.add(p);
+            p = new JPanel(new BorderLayout()); {
+                p.add(pages, BorderLayout.CENTER);
+            }
+            q.add(p);
+            p = new JPanel(new BorderLayout()); {
+                p.add(usersStat, BorderLayout.CENTER);
+            }
+            q.add(p);
+            p = new JPanel(new BorderLayout()); {
+                p.add(pagesStat, BorderLayout.CENTER);
+            }
+            q.add(p);
+            p = new JPanel(new BorderLayout()); {
+                p.add(pagerank, BorderLayout.CENTER);
+            }
+            q.add(p);
+            q.add(new JPanel());
+            p = new JPanel(); {
+                p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+                p.add(new JPanel());
+                JPanel r = new JPanel(); {
+                    r.add(firstNameUser);
+                    r.add(lastNameUser);
+                    r.add(age);
+                    r.add(addUser);
+                }
+                p.add(r);
+                p.add(new JPanel());
+            }
+            q.add(p);
+            p = new JPanel(); {
+                p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+                p.add(new JPanel());
+                JPanel r = new JPanel(); {
+                    r.add(pageName);
+                    r.add(addPage);
+                }
+                p.add(r);
+                p.add(new JPanel());
+            }
+            q.add(p);
+            p = new JPanel(); {
+                p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+                p.add(new JPanel());
+                JPanel r = new JPanel(); {
+                    r.add(searchName);
+                    r.add(search);
+                }
+                p.add(r);
+                p.add(new JPanel());
+            }
+            q.add(p);
+            p = new JPanel(); {
+                p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+                p.add(new JPanel());
+                JPanel r = new JPanel(); {
+                    r.add(likeFollow);
+                }
+                p.add(r);
+                p.add(new JPanel());
+            }
+            q.add(p);
+            q.add(new JPanel());
+            q.add(new JPanel());
+            p = new JPanel(); {
+                p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+                p.add(new JPanel());
+                JPanel r = new JPanel(); {
+                    r.add(save);
+                    r.add(loadSave);
+                }
+                p.add(r);
+                p.add(new JPanel());
+            }
+            q.add(p);
+            q.add(new JPanel());
+            q.add(new JPanel());
         }
-        JPanel j = new JPanel(); {
-            j.add(users);
-            j.add(pages);
-            j.add(usersStat);
-            j.add(pagesStat);
-            j.add(searchName);
-            j.add(search);
-        }
-        JPanel i = new JPanel(); {
-            i.add(save);
-            i.add(loadSave);
-        }
-        mainFrame.add(p, BorderLayout.NORTH);
-        mainFrame.add(j, BorderLayout.CENTER);
-        mainFrame.add(i, BorderLayout.SOUTH);
+        mainFrame.add(q);
     }
 
     private void createController() {
@@ -145,9 +215,9 @@ public class GUI {
                     model.createUser(firstNameUser.getText(), lastNameUser.getText(), Integer.parseInt(age.getText()));
                     usersStat.setText(usersStat());
                 } catch (DuplicateVertex ex) {
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(mainFrame, "This user already exist");
                 }
-                users.setText(usersAsString());
+                refresh();
             }
         });
 
@@ -158,16 +228,16 @@ public class GUI {
                     model.createPage(pageName.getText());
                     pagesStat.setText(pagesStat());
                 } catch (DuplicateVertex ex) {
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(mainFrame, "This user already exist");
                 }
-                pages.setText(pagesAsString());
+                refresh();
             }
         });
 
         search.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                NewWindow w = new NewWindow(searchName.getText(), model);
+                VertexWindow w = new VertexWindow(searchName.getText(), model);
                 w.display();
             }
         });
@@ -210,17 +280,29 @@ public class GUI {
 
             }
         });
+
+        likeFollow.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LikeFollowWindow w = new LikeFollowWindow(model);
+                w.display();
+            }
+        });
     }
 
     private void refresh() {
         Container contentPane = mainFrame.getContentPane();
+        pages.setText(pagesAsString());
+        pagesStat.setText(pagesStat());
+        users.setText(usersAsString());
+        usersStat.setText(usersStat());
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new GUI("facebook").display();
+                new GUI(names).display();
             }
         });
     }
@@ -244,7 +326,7 @@ public class GUI {
             sb = "<html>Users Stat : <br> Users number = " + model.getUserCount()
                     + "<br> Average Age = " + model.getAverageAge() + "<html>";
         }
-    return sb;
+        return sb;
     }
 
     private int likers() {
@@ -267,6 +349,23 @@ public class GUI {
         sb.append("<html> Pages :").append(" <br>");
         for (Page u : model.getPages()) {
             sb.append(u.toString()).append(" <br>");
+        }
+        sb.append("</html>");
+        return sb.toString();
+    }
+
+    private String pageRankAsString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<html> Pagerank : ").append(" <br>");
+        int i = 1;
+        for (Vertex u : model.pageRank()) {
+            sb.append(i).append(":");
+            if (u instanceof User) {
+                sb.append(((User) u).toString()).append(" <br>");
+            } else {
+                sb.append(((Page) u).toString()).append(" <br>");
+            }
+            i++;
         }
         sb.append("</html>");
         return sb.toString();
