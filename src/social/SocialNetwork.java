@@ -448,6 +448,7 @@ public class SocialNetwork extends Observable {
                             social.addAdmin((Page) source, (User) dest);
                         }
                     }
+                    break;
                 default:
                     throw new AssertionError("Unrecognized: \"" + line + "\"");
             }
