@@ -4,21 +4,35 @@ import graph.Vertex;
 import graph.exceptions.DuplicateArc;
 import graph.exceptions.DuplicateVertex;
 import graph.exceptions.VertexNotFound;
-import social.*;
+import social.SocialNetwork;
 import social.accounts.Page;
 import social.accounts.User;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
- * À décrire.
+ * Classe principale de l'interface utilisateur mise à disposition dans le
+ * cadre du réseau social miniature implémenté à l'aide d'un graphe.
  */
 public class GUI {
 
@@ -79,24 +93,24 @@ public class GUI {
     }
 
     private void createView() {
-        final int frameWidth = 1750;
-        final int frameHeight = 1000;
+        final int frameWidth = 1280;
+        final int frameHeight = 720;
 
         mainFrame = new JFrame(names);
         mainFrame.setPreferredSize(new Dimension(frameWidth, frameHeight));
 
-        firstNameUser = new JTextField("First Name");
-        lastNameUser = new JTextField("Last Name");
+        firstNameUser = new JTextField("First name");
+        lastNameUser = new JTextField("Last name");
         age = new JTextField("Age");
         addUser = new JButton("Add User");
 
-        pageName = new JTextField("Page Name");
+        pageName = new JTextField("Page name");
         addPage = new JButton("Add Page");
 
         users = new JLabel(usersAsString());
         pages = new JLabel(pagesAsString());
-        usersStat = new JLabel(usersStat());
-        pagesStat = new JLabel(pagesStat());
+        usersStat = new JLabel(userStats());
+        pagesStat = new JLabel(pageStats());
 
         pagerank = new JLabel(pageRankAsString());
 
@@ -212,10 +226,13 @@ public class GUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    model.createUser(firstNameUser.getText(), lastNameUser.getText(), Integer.parseInt(age.getText()));
-                    usersStat.setText(usersStat());
+                    model.createUser(firstNameUser.getText(),
+                            lastNameUser.getText(),
+                            Integer.parseInt(age.getText()));
+                    usersStat.setText(userStats());
                 } catch (DuplicateVertex ex) {
-                    JOptionPane.showMessageDialog(mainFrame, "This user already exist");
+                    JOptionPane.showMessageDialog(mainFrame,
+                            "Someone is already registered under this name.");
                 }
                 refresh();
             }
@@ -226,9 +243,10 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     model.createPage(pageName.getText());
-                    pagesStat.setText(pagesStat());
+                    pagesStat.setText(pageStats());
                 } catch (DuplicateVertex ex) {
-                    JOptionPane.showMessageDialog(mainFrame, "This user already exist");
+                    JOptionPane.showMessageDialog(mainFrame,
+                            "There is already a page with this name.");
                 }
                 refresh();
             }
@@ -291,83 +309,89 @@ public class GUI {
     }
 
     private void refresh() {
-        Container contentPane = mainFrame.getContentPane();
         pages.setText(pagesAsString());
-        pagesStat.setText(pagesStat());
+        pagesStat.setText(pageStats());
         users.setText(usersAsString());
-        usersStat.setText(usersStat());
+        usersStat.setText(userStats());
+        pagerank.setText(pageRankAsString());
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new GUI(names).display();
-            }
-        });
-    }
+    //- OUTILS
 
+    /**
+     * @return Renvoie la liste des utilisateurs de ce réseau social.
+     */
     private String usersAsString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<html> Users : ").append(" <br>");
+        sb.append("<html>Users :");
         for (User u : model.getUsers()) {
-            sb.append(u.toString()).append(" <br>");
+            sb.append("<br>").append(u);
         }
         sb.append("</html>");
         return sb.toString();
     }
 
-    private String usersStat() {
-        String sb;
-        if (model.getUserCount() == 0) {
-            sb = "<html>Users Stat : <br> Users number = " + model.getUserCount()
-                    + "<br> Average Age = <html>";
-        } else {
-            sb = "<html>Users Stat : <br> Users number = " + model.getUserCount()
-                    + "<br> Average Age = " + model.getAverageAge() + "<html>";
+    /**
+     * @return Renvoie des statistiques sur les utilisateurs du réseau social en
+     * général.
+     */
+    private String userStats() {
+        int userCount = model.getUserCount();
+        StringBuilder sb = new StringBuilder("<html>Statistics on users :<br>")
+                .append("> Number of users: ").append(userCount);
+        if (userCount > 0) {
+            sb.append("<br>> Average age of users: ")
+                    .append(model.getAverageAge());
         }
-        return sb;
+        return sb.append("</html>").toString();
     }
 
+    /**
+     * @return Renvoie le nombre d'utilisateurs uniques ayant aimé au moins une
+     * page sur le réseau social.
+     */
     private int likers() {
-        int a = 0;
-        for (Page u : model.getPages()) {
-            a += model.getLikers(u).size();
+        Set<User> likers = new HashSet<User>();
+        for (Page p : model.getPages()) {
+            likers.addAll(model.getLikers(p));
         }
-        return a;
+        return likers.size();
     }
 
-    private String pagesStat() {
-        String sb = "<html>Pages Stat : <br> Pages number = " + model.getPageCount()
-                + "<br> Admins Numbers = " + model.getAdmins().size()
-                + "<br> Users who like a page = " + likers() + "<html>";
-        return sb;
+    /**
+     * @return Renvoie des statistiques sur les pages du réseau social en
+     * général.
+     */
+    private String pageStats() {
+        return "<html>Statistics on pages :<br>"
+                + "> Number of pages: " + model.getPageCount() + "<br>"
+                + "> Number of admins: " + model.getAdmins().size() + "<br>"
+                + "> Users who like a page: " + likers()
+                + "</html>";
     }
 
+    /**
+     * @return Renvoie la liste des pages créées sur le réseau social.
+     */
     private String pagesAsString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<html> Pages :").append(" <br>");
-        for (Page u : model.getPages()) {
-            sb.append(u.toString()).append(" <br>");
+        StringBuilder sb = new StringBuilder("<html>Pages :");
+        for (Page p : model.getPages()) {
+            sb.append("<br>").append(p);
         }
-        sb.append("</html>");
-        return sb.toString();
+        return sb.append("</html>").toString();
     }
 
+    /**
+     * @return Renvoie la liste ordonnée des comptes les plus influents sur le
+     * réseau social.
+     */
     private String pageRankAsString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<html> Pagerank : ").append(" <br>");
+        StringBuilder sb = new StringBuilder("<html>PageRank :<br>");
         int i = 1;
-        for (Vertex u : model.pageRank()) {
-            sb.append(i).append(":");
-            if (u instanceof User) {
-                sb.append(((User) u).toString()).append(" <br>");
-            } else {
-                sb.append(((Page) u).toString()).append(" <br>");
-            }
-            i++;
+        for (Vertex x : model.pageRank()) {
+            sb.append('#').append(i).append(": ").append(x).append("<br>");
+            ++i;
         }
-        sb.append("</html>");
-        return sb.toString();
+        return sb.append("</html>").toString();
     }
 }

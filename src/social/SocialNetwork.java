@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -110,22 +111,23 @@ public class SocialNetwork extends Observable {
     }
 
     /**
-     * @pre
-     *      getUserCount() > 0
-     * @return L'âge moyen (entier) des utilisateurs de ce réseau social.
+     * Calcule l'âge moyen des utilisateurs de ce réseau social. Il est supposé
+     * que le réseau compte au moins un utilisateur.
+     * @return L'âge moyen des utilisateurs de ce réseau social arrondi à
+     * l'unité la plus proche.
      */
     public int getAverageAge() {
-        Assert.check(getUserCount() > 0,
-                "impossible pas d'utilisateur");
+        Set<User> users = getUsers();
+        Assert.check(users.size() > 0, "No users are registered.");
         int sum = 0;
-        for (User u : getUsers()) {
-            sum = sum + u.getAge();
+        for (User u : users) {
+            sum += u.getAge();
         }
-        return sum / getUserCount();
+        return (int) Math.round(sum / (double) users.size());
     }
 
     /**
-     * @return Un ensemble ordonnées des administrateurs de pages sur ce réseau
+     * @return Un ensemble ordonnée des administrateurs de pages sur ce réseau
      * social.
      */
     public Set<User> getAdmins() {
@@ -368,7 +370,8 @@ public class SocialNetwork extends Observable {
      *      u != null
      *      p != null
      */
-    public void removeFollow(User u, User v) throws ArcNotFound, VertexNotFound {
+    public void removeFollow(User u, User v)
+            throws ArcNotFound, VertexNotFound {
         Assert.check(u != null, "u is null");
         Assert.check(v != null, "v is null");
         graphe.deleteArc(u, v);
@@ -379,7 +382,7 @@ public class SocialNetwork extends Observable {
      * à partir du compte dénoté par x.
      * @param x Le compte à partir duquel calculer les degrés.
      * @return Une map liant le degré de connaissance pour chaque sommet, un
-     * degré égal à Integer.INT_MAX est considéré comme "infini" et donc sans
+     * degré égal à Integer.MAX_VALUE est considéré comme "infini" et donc sans
      * aucun lien.
      */
     public Map<Vertex, Integer> degreeKnowledge(Vertex x) {
@@ -464,12 +467,13 @@ public class SocialNetwork extends Observable {
      * @return L'ensemble des sommets triés par leur influence décroissante.
      */
     public Set<Vertex> pageRank() {
-        Assert.check(graphe.vertexCount() > 0,
-                "impossible le graphe est vide");
-        HashMap<Vertex, Double> PR = new HashMap<Vertex, Double>();
+        if (graphe.vertexCount() == 0) {
+            return new HashSet<Vertex>(0);
+        }
+        HashMap<Vertex, Double> pr = new HashMap<Vertex, Double>();
         // INITIALISATION DU PAGERANK POUR TOUT LES SOMMETS
         for (Vertex v : graphe.vertexSet()) {
-            PR.put(v, 1.0);
+            pr.put(v, 1.0);
         }
         // CALCUL DU PAGERANK
         int i = 0;
@@ -482,15 +486,15 @@ public class SocialNetwork extends Observable {
                 // SOMME DES VOISINS ENTRANTS DE V.
                 double sum = 0.0;
                 for (Vertex e : graphe.vertexTo(v)) {
-                    sum = sum + (PR.get(e) / graphe.vertexFrom(e).size());
+                    sum = sum + (pr.get(e) / graphe.vertexFrom(e).size());
                 }
                 value = (f1 / graphe.vertexCount()) + f2 * sum;
-                PR.put(v, value);
+                pr.put(v, value);
                 ++i;
             }
         }
         // Tri de la map selon le valeur du pagerank
-        return sortedByValue(PR).keySet();
+        return sortedByValue(pr).keySet();
     }
 
     // OUTILS

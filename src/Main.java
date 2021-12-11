@@ -1,18 +1,27 @@
-import graph.exceptions.DuplicateVertex;
-import graph.exceptions.VertexNotFound;
-import social.SocialNetwork;
-import social.accounts.Page;
-import social.accounts.User;
-import gui.GUI;
-
-import javax.swing.*;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
+import gui.GUI;
+import social.SocialNetwork;
+
+import javax.swing.SwingUtilities;
+
+/**
+ * Programme simulant un réseau social miniature à l'aide de graphes.
+ * Initialise un nouveau réseau social, ou si un chemin de fichier est passé sur
+ * la ligne de commande alors le programme tente de lire ce dernier.
+ */
 public final class Main {
+
+    //- CONSTANTES DE TEXTE
+
+    private static final String NETWORK_UNAMED = "Sans nom";
+
+    //- CONSTRUCTEURS
+
     private Main() {
     }
+
+    //- POINT D'ENTRÉE
 
     /**
      * Démarre l'application de visualisation d'un réseau social représenté à
@@ -20,59 +29,23 @@ public final class Main {
      * @param args Arguments de la ligne de commande.
      */
     public static void main(String[] args) {
-        // TEST
-        final SocialNetwork social = new SocialNetwork("test");
+        SocialNetwork social = null;
+
         try {
-            social.createUser("Biojout", "Kévin", 20);
-            social.createUser("Hamelin", "Thomas", 20);
-            social.createUser("Ficker", "Lucas", 20);
-            social.createUser("Fouquer", "Mattéo", 20);
-            social.createUser("Lozach", "Lucas", 21);
-            social.createUser("Merieau", "Lucas", 20);
-            social.createUser("Le Bas", "Nathan", 19);
-            social.createUser("Briet", "Romain", 19);
-            social.createUser("La meuf de", "Romain", 18);
-            social.createPage("La page de CH");
-            social.createPage("La page du salami");
-            User u = (User) social.getVertexByName("Biojout Kévin");
-            User v = (User) social.getVertexByName("Hamelin Thomas");
-            User x = (User) social.getVertexByName("Ficker Lucas");
-            Page p = (Page) social.getVertexByName("La page de CH");
-            Page q = (Page) social.getVertexByName("La page du salami");
-            social.like(u, p);
-            social.like(v, q);
-            social.follow(x, u);
-            social.follow(x, v);
-            social.addAdmin(p, u);
-            System.out.println(social.getAdmins());
-            System.out.println(social.getAdminsOf(p));
-            System.out.println(social.getFollow(x));
-            System.out.println(social.getFollowers(v));
-            System.out.println(social.getPagesOfAdmin(u));
-            social.save();
-            System.out.println("Init");
-            SocialNetwork social2 = SocialNetwork.init(new File(social.getName() + ".txt"));
-            System.out.println(social2.getAdmins());
-            System.out.println(social2.getAdminsOf(p));
-            System.out.println(social2.getFollow(x));
-            System.out.println(social2.getFollowers(v));
-            System.out.println(social2.getPagesOfAdmin(u));
-            System.out.println(social2.getUsers());
-        } catch (DuplicateVertex e) {
-            throw new AssertionError("duplication de sommet");
-        } catch (VertexNotFound e) {
-            throw new AssertionError("sommet introuvables");
-        } catch (IOException e) {
-            throw new AssertionError("problème d'entrée sortie");
-        } catch (Exception e) {
-            System.out.println(e);
-            throw new AssertionError("problème des testes");
+            social = args.length > 1
+                    ? SocialNetwork.init(new File(args[1]))
+                    : new SocialNetwork(NETWORK_UNAMED);
+        } catch (Exception ex) {
+            System.err.println("An error occurred while initiating network!");
+            ex.printStackTrace();
+            System.exit(1);
         }
-        System.out.println(social.pageRank());
+
+        final SocialNetwork finalSocial = social;
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new GUI(social.getName(), social).display();
+                new GUI(finalSocial.getName(), finalSocial).display();
             }
         });
     }
