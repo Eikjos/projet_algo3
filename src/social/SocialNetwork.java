@@ -375,6 +375,18 @@ public class SocialNetwork extends Observable {
     }
 
     /**
+     * Renvoie les degrés de connaissances pour chaque compte du réseau social
+     * à partir du compte dénoté par x.
+     * @param x Le compte à partir duquel calculer les degrés.
+     * @return Une map liant le degré de connaissance pour chaque sommet, un
+     * degré égal à Integer.INT_MAX est considéré comme "infini" et donc sans
+     * aucun lien.
+     */
+    public Map<Vertex, Integer> degreeKnowledge(Vertex x) {
+        return graphe.shortestPathsFrom(x);
+    }
+
+    /**
      * Permet de sauvegarder l'état du réseau social dans un fichier.
      * dans un fichier getName().txt
      */
