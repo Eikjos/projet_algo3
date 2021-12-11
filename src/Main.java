@@ -68,7 +68,7 @@ public final class Main {
             System.out.println(e);
             throw new AssertionError("problème des testes");
         }
-        System.out.println(social.Pagerank());
+        System.out.println(social.pageRank());
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
