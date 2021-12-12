@@ -49,7 +49,7 @@ public class GUI {
     private JTextField searchName;
     private JButton search;
 
-    private JButton likeFollow;
+    private JButton relation;
 
     private JButton save;
     private JButton loadSave;
@@ -119,7 +119,7 @@ public class GUI {
         searchName.setColumns(10);
         search = new JButton("Search");
 
-        likeFollow = new JButton("Like pages or follow other users");
+        relation = new JButton("Add / Remove Relation");
 
         save = new JButton("Save");
         loadSave = new JButton("Load from file");
@@ -205,16 +205,20 @@ public class GUI {
                 p.add(new JPanel());
             }
             q.add(p);
+            q.add(new JPanel());
+            q.add(new JPanel());
             p = new JPanel(); {
                 p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
                 p.add(new JPanel());
                 JPanel r = new JPanel(); {
-                    r.add(likeFollow);
+                    r.add(relation);
                 }
                 p.add(r);
                 p.add(new JPanel());
             }
             q.add(p);
+            q.add(new JPanel());
+            q.add(new JPanel());
             q.add(new JPanel());
             q.add(new JPanel());
             p = new JPanel(); {
@@ -339,10 +343,10 @@ public class GUI {
             }
         });
 
-        likeFollow.addActionListener(new ActionListener() {
+        relation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LikeFollowWindow w = new LikeFollowWindow(model);
+                RelationWindow w = new RelationWindow(model);
                 w.display();
             }
         });
@@ -378,7 +382,7 @@ public class GUI {
     private String usersStat() {
         String sb;
         if (model.getUserCount() == 0) {
-            sb = "<html>Users Stat : <br> Users number = " + model.getUserCount()
+            sb = "<html> <center><b>UsersStat :</b> </center> <br> Users number = " + model.getUserCount()
                     + "<br> Average Age = <html>";
         } else {
             sb = "<html>Users Stat : <br> Users number = " + model.getUserCount()

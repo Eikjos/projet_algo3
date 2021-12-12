@@ -39,14 +39,68 @@ public class VertexWindow {
             JLabel getlike = new JLabel(getLike(u));
             JLabel degree = new JLabel(getdegree(u));
             JPanel p = new JPanel(new GridLayout(2, 3)); {
-                p.add(info);
-                p.add(followers);
-                p.add(following);
-                p.add(adminof);
-                p.add(getlike);
-                p.add(degree);
+                JPanel q = new JPanel(); {
+                    q.setLayout(new BoxLayout(q, BoxLayout.Y_AXIS));
+                    q.add(new JPanel());
+                    JPanel r = new JPanel(); {
+                        r.add(info);
+                    }
+                    q.add(r);
+                    q.add(new JPanel());
+                }
+                p.add(q);
+                q = new JPanel(); {
+                    q.setLayout(new BoxLayout(q, BoxLayout.Y_AXIS));
+                    q.add(new JPanel());
+                    JPanel r = new JPanel(); {
+                        r.add(followers);
+                    }
+                    q.add(r);
+                    q.add(new JPanel());
+                }
+                p.add(q);
+                q = new JPanel(); {
+                    q.setLayout(new BoxLayout(q, BoxLayout.Y_AXIS));
+                    q.add(new JPanel());
+                    JPanel r = new JPanel(); {
+                        r.add(following);
+                    }
+                    q.add(r);
+                    q.add(new JPanel());
+                }
+                p.add(q);
+                q = new JPanel(); {
+                    q.setLayout(new BoxLayout(q, BoxLayout.Y_AXIS));
+                    q.add(new JPanel());
+                    JPanel r = new JPanel(); {
+                        r.add(adminof);
+                    }
+                    q.add(r);
+                    q.add(new JPanel());
+                }
+                p.add(q);
+                q = new JPanel(); {
+                    q.setLayout(new BoxLayout(q, BoxLayout.Y_AXIS));
+                    q.add(new JPanel());
+                    JPanel r = new JPanel(); {
+                        r.add(getlike);
+                    }
+                    q.add(r);
+                    q.add(new JPanel());
+                }
+                p.add(q);
+                q = new JPanel(); {
+                    q.setLayout(new BoxLayout(q, BoxLayout.Y_AXIS));
+                    q.add(new JPanel());
+                    JPanel r = new JPanel(); {
+                        r.add(degree);
+                    }
+                    q.add(r);
+                    q.add(new JPanel());
+                }
+                p.add(q);
             }
-            frame.add(p, BorderLayout.CENTER);
+            frame.add(p);
         } else {
             Page p = (Page) model.getVertexByName(string);
             JLabel info = new JLabel(p.toString());
@@ -54,12 +108,48 @@ public class VertexWindow {
             JLabel admin = new JLabel(getAdmin(p));
             JLabel degree = new JLabel(getdegree(p));
             JPanel l = new JPanel(new GridLayout(2, 2)); {
-                l.add(info);
-                l.add(likers);
-                l.add(admin);
-                l.add(degree);
+                JPanel q = new JPanel(); {
+                    q.setLayout(new BoxLayout(q, BoxLayout.Y_AXIS));
+                    q.add(new JPanel());
+                    JPanel r = new JPanel(); {
+                        r.add(info);
+                    }
+                    q.add(r);
+                    q.add(new JPanel());
+                }
+                l.add(q);
+                q = new JPanel(); {
+                    q.setLayout(new BoxLayout(q, BoxLayout.Y_AXIS));
+                    q.add(new JPanel());
+                    JPanel r = new JPanel(); {
+                        r.add(likers);
+                    }
+                    q.add(r);
+                    q.add(new JPanel());
+                }
+                l.add(q);
+                q = new JPanel(); {
+                    q.setLayout(new BoxLayout(q, BoxLayout.Y_AXIS));
+                    q.add(new JPanel());
+                    JPanel r = new JPanel(); {
+                        r.add(admin);
+                    }
+                    q.add(r);
+                    q.add(new JPanel());
+                }
+                l.add(q);
+                q = new JPanel(); {
+                    q.setLayout(new BoxLayout(q, BoxLayout.Y_AXIS));
+                    q.add(new JPanel());
+                    JPanel r = new JPanel(); {
+                        r.add(degree);
+                    }
+                    q.add(r);
+                    q.add(new JPanel());
+                }
+                l.add(q);
             }
-            frame.add(l, BorderLayout.CENTER);
+            frame.add(l);
         }
     }
 
