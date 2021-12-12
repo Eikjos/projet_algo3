@@ -59,13 +59,18 @@ public class GUI {
     private JButton save;
     private JButton loadSave;
 
-    //- DONNÉES
+    //- MODÈLE
 
     /**
      * Le modèle utilisé par ce réseau social.
      */
     private SocialNetwork model;
 
+    //- CONSTRUCTEURS
+
+    /**
+     * Une nouvelle interface utilisant un modèle vierge.
+     */
     public GUI() {
         createModel();
         createView();
@@ -73,6 +78,10 @@ public class GUI {
         createController();
     }
 
+    /**
+     * Une nouvelle interface utilisant le modèle fourni.
+     * @param model Modèle à affecter à la vue.
+     */
     public GUI(SocialNetwork model) {
         setModel(model);
         createView();
@@ -80,6 +89,11 @@ public class GUI {
         createController();
     }
 
+    //- COMMANDES
+
+    /**
+     * Affiche la fenêtre à l'utilisateur.
+     */
     public void display() {
         refresh();
         mainFrame.pack();
@@ -87,14 +101,24 @@ public class GUI {
         mainFrame.setVisible(true);
     }
 
+    /**
+     * Crée un nouveau réseau social puis l'affecte à la vue.
+     */
     private void createModel() {
         model = new SocialNetwork("Sans nom");
     }
 
+    /**
+     * Modifie le réseau social utilisé par la vue.
+     * @param model Modèle à affecter à la vue.
+     */
     private void setModel(SocialNetwork model) {
         this.model = model;
     }
 
+    /**
+     * Crée les composants majeurs de la vue.
+     */
     private void createView() {
         final int frameWidth = 1280;
         final int frameHeight = 720;
@@ -123,11 +147,14 @@ public class GUI {
 
         likeFollow = new JButton("Like pages or follow other users");
 
-        save = new JButton("Save");
+        save = new JButton("Save to");
         loadSave = new JButton("Load from file");
-
     }
 
+    /**
+     * Crée les composants mineurs et place l'ensemble des composants de
+     * l'application.
+     */
     private void placeComponents() {
         JPanel q = new JPanel(new GridLayout(3, 5)); {
             JPanel p = new JPanel(new BorderLayout()); {
@@ -215,6 +242,10 @@ public class GUI {
         mainFrame.add(q);
     }
 
+    /**
+     * Crée les observateurs et les écouteurs requis au bon comportement de
+     * l'application.
+     */
     private void createController() {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -304,6 +335,10 @@ public class GUI {
         });
     }
 
+    /**
+     * Met à jour les composants de la fenêtre à l'aide des dernières données
+     * provenant du modèle.
+     */
     private void refresh() {
         mainFrame.setTitle(model.getName());
         pages.setText(pagesAsString());
