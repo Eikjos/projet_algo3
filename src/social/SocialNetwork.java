@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class SocialNetwork extends Observable {
     /**
      * Représente le graphe associé à ce réseau social.
      */
-    private final Graph graphe;
+    private final Graph graph;
 
     /**
      * Le nom de ce réseau social.
@@ -48,15 +49,18 @@ public class SocialNetwork extends Observable {
     // CONSTRUCTEUR
 
     /**
-     * Créer un réseau social avec un graphe et de nom name.
+     * Crée un nouveau réseau social portant le nom dénoté par name.
      * @pre
      *      name != null
      * @post
      *      getGraph() != null
+     *      getName() != null
+     *      for 0 <= i < name.length():
+     *          name.charAt(i) == this.name.charAt(i)
      */
     public SocialNetwork(String name) {
         Assert.check(name != null, "name is null");
-        graphe = new StdGraph();
+        this.graph = new StdGraph();
         this.name = name;
     }
 
@@ -74,7 +78,7 @@ public class SocialNetwork extends Observable {
      */
     public Set<User> getUsers() {
         Set<User> result = new TreeSet<User>();
-        for (Vertex s : graphe.vertexSet()) {
+        for (Vertex s : graph.vertexSet()) {
             if (s instanceof User) {
                 result.add((User) s);
             }
@@ -94,7 +98,7 @@ public class SocialNetwork extends Observable {
      */
     public Set<Page> getPages() {
         Set<Page> result = new TreeSet<Page>();
-        for (Vertex s : graphe.vertexSet()) {
+        for (Vertex s : graph.vertexSet()) {
             if (s instanceof Page) {
                 result.add((Page) s);
             }
@@ -110,28 +114,29 @@ public class SocialNetwork extends Observable {
     }
 
     /**
-     * @pre
-     *      getUserCount() > 0
-     * @return L'âge moyen (entier) des utilisateurs de ce réseau social.
+     * Calcule l'âge moyen des utilisateurs de ce réseau social. Il est supposé
+     * que le réseau compte au moins un utilisateur.
+     * @return L'âge moyen des utilisateurs de ce réseau social arrondi à
+     * l'unité la plus proche.
      */
     public int getAverageAge() {
-        Assert.check(getUserCount() > 0,
-                "impossible pas d'utilisateur");
+        Set<User> users = getUsers();
+        Assert.check(users.size() > 0, "No users are registered.");
         int sum = 0;
-        for (User u : getUsers()) {
-            sum = sum + u.getAge();
+        for (User u : users) {
+            sum += u.getAge();
         }
-        return sum / getUserCount();
+        return (int) Math.round(sum / (double) users.size());
     }
 
     /**
-     * @return Un ensemble ordonnées des administrateurs de pages sur ce réseau
+     * @return Un ensemble ordonnée des administrateurs de pages sur ce réseau
      * social.
      */
     public Set<User> getAdmins() {
         Set<User> result = new TreeSet<User>();
         for (User u : getUsers()) {
-            for (Vertex v : graphe.vertexTo(u)) {
+            for (Vertex v : graph.vertexTo(u)) {
                 if (v instanceof Page) {
                     result.add(u);
                 }
@@ -149,7 +154,7 @@ public class SocialNetwork extends Observable {
     public Set<User> getAdminsOf(Page p) {
         Assert.check(p != null, "p is null");
         Set<User> result = new TreeSet<User>();
-        for (Vertex v : graphe.vertexFrom(p)) {
+        for (Vertex v : graph.vertexFrom(p)) {
             if (v instanceof User) {
                 result.add((User) v);
             }
@@ -166,7 +171,7 @@ public class SocialNetwork extends Observable {
     public Set<User> getLikers(Page p) {
         Assert.check(p != null, "p is null");
         Set<User> result = new TreeSet<User>();
-        for (Vertex v : graphe.vertexTo(p)) {
+        for (Vertex v : graph.vertexTo(p)) {
             if (v instanceof User) {
                 result.add((User) v);
             }
@@ -183,7 +188,7 @@ public class SocialNetwork extends Observable {
     public Set<User> getFollowers(User u) {
         Assert.check(u != null, "u is null");
         Set<User> result = new TreeSet<User>();
-        for (Vertex v : graphe.vertexTo(u)) {
+        for (Vertex v : graph.vertexTo(u)) {
             if (v instanceof User) {
                 result.add((User) v);
             }
@@ -200,7 +205,7 @@ public class SocialNetwork extends Observable {
     public Set<User> getFollow(User u) {
         Assert.check(u != null, "u is null");
         Set<User> result = new TreeSet<User>();
-        for (Vertex v : graphe.vertexFrom(u)) {
+        for (Vertex v : graph.vertexFrom(u)) {
             if (v instanceof User) {
                 result.add((User) v);
             }
@@ -217,7 +222,7 @@ public class SocialNetwork extends Observable {
     public Set<Page> getLikes(User u) {
         Assert.check(u != null, "u is null");
         Set<Page> result = new TreeSet<Page>();
-        for (Vertex v : graphe.vertexFrom(u)) {
+        for (Vertex v : graph.vertexFrom(u)) {
             if (v instanceof Page) {
                 result.add((Page) v);
             }
@@ -234,7 +239,7 @@ public class SocialNetwork extends Observable {
     public Set<Page> getPagesOfAdmin(User u) {
         Assert.check(u != null, "u is null");
         Set<Page> result = new TreeSet<Page>();
-        for (Vertex v : graphe.vertexTo(u)) {
+        for (Vertex v : graph.vertexTo(u)) {
             if (v instanceof Page) {
                 result.add((Page) v);
             }
@@ -248,7 +253,7 @@ public class SocialNetwork extends Observable {
      * @return Le sommet ayant pour clé la chaine dénoté par n, null sinon.
      */
     public Vertex getVertexByName(String n) {
-        return graphe.findVertexByName(n);
+        return graph.findVertexByName(n);
     }
 
 
@@ -260,7 +265,7 @@ public class SocialNetwork extends Observable {
     public void createUser(String lastname, String firstname, int age)
             throws DuplicateVertex {
         User u = new User(lastname, firstname, age);
-        graphe.addVertex(u);
+        graph.addVertex(u);
     }
 
     /**
@@ -268,7 +273,7 @@ public class SocialNetwork extends Observable {
      */
     public void createPage(String name) throws DuplicateVertex {
         Page p = new Page(name);
-        graphe.addVertex(p);
+        graph.addVertex(p);
     }
 
     /**
@@ -281,7 +286,7 @@ public class SocialNetwork extends Observable {
     public void removeUser(String name) throws VertexNotFound {
         Assert.check(name != null,
                 "name is null");
-        graphe.removeVertex(getVertexByName(name));
+        graph.removeVertex(getVertexByName(name));
     }
 
     /**
@@ -294,7 +299,7 @@ public class SocialNetwork extends Observable {
     public void removePage(String name) throws VertexNotFound {
         Assert.check(name != null,
                 "name is null");
-        graphe.removeVertex(getVertexByName(name));
+        graph.removeVertex(getVertexByName(name));
     }
 
     /**
@@ -308,7 +313,7 @@ public class SocialNetwork extends Observable {
     public void like(User u, Page p) throws DuplicateArc, VertexNotFound {
         Assert.check(u != null, "u is null");
         Assert.check(p != null, "p is null");
-        graphe.createArc(u, p);
+        graph.createArc(u, p);
     }
 
     /**
@@ -317,7 +322,7 @@ public class SocialNetwork extends Observable {
     public void removeLike(User u, Page p) throws ArcNotFound, VertexNotFound {
         Assert.check(u != null, "u is null");
         Assert.check(p != null, "p is null");
-        graphe.deleteArc(u, p);
+        graph.deleteArc(u, p);
     }
 
     /**
@@ -332,7 +337,7 @@ public class SocialNetwork extends Observable {
     public void addAdmin(Page p, User u) throws VertexNotFound, DuplicateArc {
         Assert.check(u != null, "u is null");
         Assert.check(p != null, "p is null");
-        graphe.createArc(p, u);
+        graph.createArc(p, u);
     }
 
     /**
@@ -344,7 +349,7 @@ public class SocialNetwork extends Observable {
     public void removeAdmin(Page p, User u) throws ArcNotFound, VertexNotFound {
         Assert.check(u != null, "u is null");
         Assert.check(p != null, "p is null");
-        graphe.deleteArc(p, u);
+        graph.deleteArc(p, u);
     }
 
     /**
@@ -359,7 +364,7 @@ public class SocialNetwork extends Observable {
     public void follow(User u, User v) throws VertexNotFound, DuplicateArc {
         Assert.check(u != null, "u is null");
         Assert.check(v != null, "v is null");
-        graphe.createArc(u, v);
+        graph.createArc(u, v);
     }
 
     /**
@@ -368,10 +373,11 @@ public class SocialNetwork extends Observable {
      *      u != null
      *      p != null
      */
-    public void removeFollow(User u, User v) throws ArcNotFound, VertexNotFound {
+    public void removeFollow(User u, User v)
+            throws ArcNotFound, VertexNotFound {
         Assert.check(u != null, "u is null");
         Assert.check(v != null, "v is null");
-        graphe.deleteArc(u, v);
+        graph.deleteArc(u, v);
     }
 
     /**
@@ -379,11 +385,11 @@ public class SocialNetwork extends Observable {
      * à partir du compte dénoté par x.
      * @param x Le compte à partir duquel calculer les degrés.
      * @return Une map liant le degré de connaissance pour chaque sommet, un
-     * degré égal à Integer.INT_MAX est considéré comme "infini" et donc sans
+     * degré égal à Integer.MAX_VALUE est considéré comme "infini" et donc sans
      * aucun lien.
      */
     public Map<Vertex, Integer> degreeKnowledge(Vertex x) {
-        return graphe.shortestPathsFrom(x);
+        return graph.shortestPathsFrom(x);
     }
 
     /**
@@ -393,15 +399,15 @@ public class SocialNetwork extends Observable {
     public void save() throws IOException {
         String filename = getName() + ".txt";
         BufferedWriter output = new BufferedWriter(new FileWriter(filename));
-        for (Vertex v : graphe.vertexSet()) {
+        for (Vertex v : graph.vertexSet()) {
             output.write(v.serialize());
             output.newLine();
         }
-        for (Vertex v : graphe.vertexSet()) {
-            Set<Vertex> out = graphe.vertexFrom(v);
+        for (Vertex v : graph.vertexSet()) {
+            Set<Vertex> out = graph.vertexFrom(v);
             if (out.size() > 0) {
                 StringBuilder line = new StringBuilder("A:" + v.getName());
-                for (Vertex u : graphe.vertexFrom(v)) {
+                for (Vertex u : graph.vertexFrom(v)) {
                     line.append(":").append(u.getName());
                 }
                 output.write(line.toString());
@@ -448,6 +454,7 @@ public class SocialNetwork extends Observable {
                             social.addAdmin((Page) source, (User) dest);
                         }
                     }
+                    break;
                 default:
                     throw new AssertionError("Unrecognized: \"" + line + "\"");
             }
@@ -463,12 +470,13 @@ public class SocialNetwork extends Observable {
      * @return L'ensemble des sommets triés par leur influence décroissante.
      */
     public Set<Vertex> pageRank() {
-        Assert.check(graphe.vertexCount() > 0,
-                "impossible le graphe est vide");
-        HashMap<Vertex, Double> PR = new HashMap<Vertex, Double>();
+        if (graph.vertexCount() == 0) {
+            return new HashSet<Vertex>(0);
+        }
+        HashMap<Vertex, Double> pr = new HashMap<Vertex, Double>();
         // INITIALISATION DU PAGERANK POUR TOUT LES SOMMETS
-        for (Vertex v : graphe.vertexSet()) {
-            PR.put(v, 1.0);
+        for (Vertex v : graph.vertexSet()) {
+            pr.put(v, 1.0);
         }
         // CALCUL DU PAGERANK
         int i = 0;
@@ -476,20 +484,20 @@ public class SocialNetwork extends Observable {
         final double f1 = 0.15;
         final double f2 = 0.85;
         while (i <= valeur) {
-            for (Vertex v : graphe.vertexSet()) {
+            for (Vertex v : graph.vertexSet()) {
                 double value;
                 // SOMME DES VOISINS ENTRANTS DE V.
                 double sum = 0.0;
-                for (Vertex e : graphe.vertexTo(v)) {
-                    sum = sum + (PR.get(e) / graphe.vertexFrom(e).size());
+                for (Vertex e : graph.vertexTo(v)) {
+                    sum = sum + (pr.get(e) / graph.vertexFrom(e).size());
                 }
-                value = (f1 / graphe.vertexCount()) + f2 * sum;
-                PR.put(v, value);
+                value = (f1 / graph.vertexCount()) + f2 * sum;
+                pr.put(v, value);
                 ++i;
             }
         }
         // Tri de la map selon le valeur du pagerank
-        return sortedByValue(PR).keySet();
+        return sortedByValue(pr).keySet();
     }
 
     // OUTILS

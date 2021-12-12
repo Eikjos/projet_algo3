@@ -1,2 +1,5 @@
 # Java compiled classes
 out/
+
+# Generated network files
+*.txt

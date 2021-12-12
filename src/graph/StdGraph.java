@@ -367,30 +367,23 @@ public class StdGraph implements Graph {
      * du sommet dénoté par x.
      */
     public Map<Vertex, Integer> shortestPathsFrom(Vertex x) {
-        class DistVertPair {
-            public final Vertex vertex;
-            public final int distance;
-            DistVertPair(Vertex v, int d) {
-                vertex = v;
-                distance = d;
-            }
-        }
+        Assert.check(containsVertex(x), "x does not belong to this graph.");
         Map<Vertex, Integer> distances = new HashMap<Vertex, Integer>();
         for (Vertex y : vertexSet()) {
             distances.put(y, Integer.MAX_VALUE);
         }
         distances.put(x, 0);
-        Queue<DistVertPair> pqueue = new ArrayDeque<DistVertPair>();
-        pqueue.add(new DistVertPair(x, 0));
+        Queue<Vertex> pqueue = new ArrayDeque<Vertex>();
+        pqueue.add(x);
         while (!pqueue.isEmpty()) {
-            DistVertPair p = pqueue.poll();
-            int xDistance = distances.get(p.vertex);
-            for (Vertex y : vertexFrom(p.vertex)) {
+            Vertex v = pqueue.poll();
+            int xDistance = distances.get(v);
+            for (Vertex y : vertexFrom(v)) {
                 int yDistance = distances.get(y);
                 if (yDistance > xDistance + 1) {
                     yDistance = xDistance + 1;
                     distances.put(y, yDistance);
-                    pqueue.offer(new DistVertPair(y, yDistance));
+                    pqueue.offer(y);
                 }
             }
         }
