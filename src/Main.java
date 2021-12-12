@@ -45,7 +45,7 @@ public final class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new GUI(finalSocial.getName(), finalSocial).display();
+                new GUI(finalSocial).display();
             }
         });
     }

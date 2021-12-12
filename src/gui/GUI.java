@@ -1,9 +1,7 @@
 package gui;
 
 import graph.Vertex;
-import graph.exceptions.DuplicateArc;
 import graph.exceptions.DuplicateVertex;
-import graph.exceptions.VertexNotFound;
 import social.SocialNetwork;
 import social.accounts.Page;
 import social.accounts.User;
@@ -13,14 +11,12 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -36,8 +32,9 @@ import javax.swing.JTextField;
  */
 public class GUI {
 
+    //- COMPOSANTS SWING
+
     private JFrame mainFrame;
-    private SocialNetwork model;
 
     private JTextField firstNameUser;
     private JTextField lastNameUser;
@@ -62,20 +59,22 @@ public class GUI {
     private JButton save;
     private JButton loadSave;
 
+    //- DONNÉES
 
-    private static String names;
+    /**
+     * Le modèle utilisé par ce réseau social.
+     */
+    private SocialNetwork model;
 
-    public GUI(String name) {
-        names = name;
+    public GUI() {
         createModel();
         createView();
         placeComponents();
         createController();
     }
 
-    public GUI(String name, SocialNetwork models) {
-        names = name;
-        model = models;
+    public GUI(SocialNetwork model) {
+        setModel(model);
         createView();
         placeComponents();
         createController();
@@ -89,14 +88,18 @@ public class GUI {
     }
 
     private void createModel() {
-        model = new SocialNetwork(names);
+        model = new SocialNetwork("Sans nom");
+    }
+
+    private void setModel(SocialNetwork model) {
+        this.model = model;
     }
 
     private void createView() {
         final int frameWidth = 1280;
         final int frameHeight = 720;
 
-        mainFrame = new JFrame(names);
+        mainFrame = new JFrame(model.getName());
         mainFrame.setPreferredSize(new Dimension(frameWidth, frameHeight));
 
         firstNameUser = new JTextField("First name");
@@ -266,7 +269,8 @@ public class GUI {
                 try {
                     model.save();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(mainFrame,
+                            "Could not save to file: " + ex.getMessage());
                 }
             }
         });
@@ -274,28 +278,20 @@ public class GUI {
         loadSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                File file = null;
-                SocialNetwork news;
-                final JFileChooser fc = new JFileChooser();
-                int returnVal = fc.showOpenDialog(fc.getParent());
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    file = fc.getSelectedFile();
+                JFileChooser fc = new JFileChooser();
+                int action = fc.showOpenDialog(mainFrame);
+                if (action != JFileChooser.APPROVE_OPTION) {
+                    return;
                 }
                 try {
-                    news = SocialNetwork.init(file);
-                    mainFrame.dispose();
-                    GUI newg = new GUI(model.getName(), news);
-                    newg.display();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                } catch (VertexNotFound ex) {
-                    ex.printStackTrace();
-                } catch (DuplicateArc ex) {
-                    ex.printStackTrace();
-                } catch (DuplicateVertex ex) {
-                    ex.printStackTrace();
+                    File chosen = fc.getSelectedFile();
+                    SocialNetwork imported = SocialNetwork.init(chosen);
+                    setModel(imported);
+                    refresh();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(mainFrame,
+                            "Could not load from file: " + ex.getMessage());
                 }
-
             }
         });
 
@@ -309,6 +305,7 @@ public class GUI {
     }
 
     private void refresh() {
+        mainFrame.setTitle(model.getName());
         pages.setText(pagesAsString());
         pagesStat.setText(pageStats());
         users.setText(usersAsString());
@@ -323,7 +320,7 @@ public class GUI {
      */
     private String usersAsString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<html>Users :");
+        sb.append("<html><center><b>Users</b></center>");
         for (User u : model.getUsers()) {
             sb.append("<br>").append(u);
         }
@@ -337,7 +334,8 @@ public class GUI {
      */
     private String userStats() {
         int userCount = model.getUserCount();
-        StringBuilder sb = new StringBuilder("<html>Statistics on users :<br>")
+        StringBuilder sb = new StringBuilder(
+                "<html><center><b>Statistics on users</b></center>")
                 .append("> Number of users: ").append(userCount);
         if (userCount > 0) {
             sb.append("<br>> Average age of users: ")
@@ -363,7 +361,7 @@ public class GUI {
      * général.
      */
     private String pageStats() {
-        return "<html>Statistics on pages :<br>"
+        return "<html><center><b>Statistics on pages</b></center>"
                 + "> Number of pages: " + model.getPageCount() + "<br>"
                 + "> Number of admins: " + model.getAdmins().size() + "<br>"
                 + "> Users who like a page: " + likers()
@@ -374,7 +372,8 @@ public class GUI {
      * @return Renvoie la liste des pages créées sur le réseau social.
      */
     private String pagesAsString() {
-        StringBuilder sb = new StringBuilder("<html>Pages :");
+        StringBuilder sb = new StringBuilder(
+                "<html><center><b>Pages</b></center>");
         for (Page p : model.getPages()) {
             sb.append("<br>").append(p);
         }
@@ -386,7 +385,8 @@ public class GUI {
      * réseau social.
      */
     private String pageRankAsString() {
-        StringBuilder sb = new StringBuilder("<html>PageRank :<br>");
+        StringBuilder sb = new StringBuilder(
+                "<html><center><b>PageRank</b></center>");
         int i = 1;
         for (Vertex x : model.pageRank()) {
             sb.append('#').append(i).append(": ").append(x).append("<br>");
