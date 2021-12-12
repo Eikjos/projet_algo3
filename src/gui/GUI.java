@@ -30,8 +30,14 @@ public class GUI {
     private JTextField age;
     private JButton addUser;
 
+    private JTextField delName;
+    private JButton delUser;
+
     private JTextField pageName;
     private JButton addPage;
+
+    private JTextField delpageName;
+    private JButton delPage;
 
     private JLabel users;
     private JLabel pages;
@@ -90,8 +96,17 @@ public class GUI {
         age = new JTextField("Age");
         addUser = new JButton("Add User");
 
+        delName = new JTextField("Name");
+        delName.setColumns(10);
+        delUser = new JButton("Delete User");
+
         pageName = new JTextField("Page Name");
+        pageName.setColumns(10);
         addPage = new JButton("Add Page");
+
+        delpageName = new JTextField("Page Name");
+        delpageName.setColumns(10);
+        delPage = new JButton("Delete Page");
 
         users = new JLabel(usersAsString());
         pages = new JLabel(pagesAsString());
@@ -112,7 +127,7 @@ public class GUI {
     }
 
     private void placeComponents() {
-        JPanel q = new JPanel(new GridLayout(3, 5)); {
+        JPanel q = new JPanel(new GridLayout(4, 5)); {
             JPanel p = new JPanel(new BorderLayout()); {
                 p.add(users, BorderLayout.CENTER);
             }
@@ -133,7 +148,6 @@ public class GUI {
                 p.add(pagerank, BorderLayout.CENTER);
             }
             q.add(p);
-            q.add(new JPanel());
             p = new JPanel(); {
                 p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
                 p.add(new JPanel());
@@ -151,8 +165,30 @@ public class GUI {
                 p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
                 p.add(new JPanel());
                 JPanel r = new JPanel(); {
+                    r.add(delName);
+                    r.add(delUser);
+                }
+                p.add(r);
+                p.add(new JPanel());
+            }
+            q.add(p);
+            p = new JPanel(); {
+                p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+                p.add(new JPanel());
+                JPanel r = new JPanel(); {
                     r.add(pageName);
                     r.add(addPage);
+                }
+                p.add(r);
+                p.add(new JPanel());
+            }
+            q.add(p);
+            p = new JPanel(); {
+                p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+                p.add(new JPanel());
+                JPanel r = new JPanel(); {
+                    r.add(delpageName);
+                    r.add(delPage);
                 }
                 p.add(r);
                 p.add(new JPanel());
@@ -213,9 +249,20 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     model.createUser(firstNameUser.getText(), lastNameUser.getText(), Integer.parseInt(age.getText()));
-                    usersStat.setText(usersStat());
                 } catch (DuplicateVertex ex) {
                     JOptionPane.showMessageDialog(mainFrame, "This user already exist");
+                }
+                refresh();
+            }
+        });
+
+        delUser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    model.removeUser(delName.getText());
+                } catch (VertexNotFound vertexNotFound) {
+                    vertexNotFound.printStackTrace();
                 }
                 refresh();
             }
@@ -226,9 +273,20 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 try {
                     model.createPage(pageName.getText());
-                    pagesStat.setText(pagesStat());
                 } catch (DuplicateVertex ex) {
                     JOptionPane.showMessageDialog(mainFrame, "This user already exist");
+                }
+                refresh();
+            }
+        });
+
+        delPage.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    model.removePage(delpageName.getText());
+                } catch (VertexNotFound vertexNotFound) {
+                    vertexNotFound.printStackTrace();
                 }
                 refresh();
             }

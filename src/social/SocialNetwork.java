@@ -314,7 +314,7 @@ public class SocialNetwork extends Observable {
     /**
      * Supprime le like de l'utilisateur u sur la page p.
      */
-    public void remvoveLike(User u, Page p) throws ArcNotFound, VertexNotFound {
+    public void removeLike(User u, Page p) throws ArcNotFound, VertexNotFound {
         Assert.check(u != null, "u is null");
         Assert.check(p != null, "p is null");
         graphe.deleteArc(u, p);

@@ -1,11 +1,14 @@
 package gui;
 
+import graph.Vertex;
 import social.SocialNetwork;
 import social.accounts.Page;
 import social.accounts.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
+import java.util.Set;
 
 public class VertexWindow {
 
@@ -20,8 +23,8 @@ public class VertexWindow {
     }
 
     public void display() {
-        final int frameWidth = 900;
-        final int frameHeight = 400;
+        final int frameWidth = 1000;
+        final int frameHeight = 500;
         frame.setPreferredSize(new Dimension(frameWidth, frameHeight));
         frame.pack();
         frame.setLocationRelativeTo(null);
@@ -34,37 +37,29 @@ public class VertexWindow {
             JLabel following = new JLabel(getFollowing(u));
             JLabel adminof = new JLabel(adminof(u));
             JLabel getlike = new JLabel(getLike(u));
-            JPanel p = new JPanel(); {
+            JLabel degree = new JLabel(getdegree(u));
+            JPanel p = new JPanel(new GridLayout(2, 3)); {
                 p.add(info);
+                p.add(followers);
+                p.add(following);
+                p.add(adminof);
+                p.add(getlike);
+                p.add(degree);
             }
-            JPanel i = new JPanel(); {
-                i.add(followers);
-                i.add(following);
-            }
-            JPanel t = new JPanel(); {
-                t.add(getlike);
-                t.add(adminof);
-            }
-            frame.add(p, BorderLayout.NORTH);
-            frame.add(i, BorderLayout.CENTER);
-            frame.add(t, BorderLayout.SOUTH);
+            frame.add(p, BorderLayout.CENTER);
         } else {
             Page p = (Page) model.getVertexByName(string);
             JLabel info = new JLabel(p.toString());
             JLabel likers = new JLabel(getLikers(p));
             JLabel admin = new JLabel(getAdmin(p));
-            JPanel l = new JPanel(); {
+            JLabel degree = new JLabel(getdegree(p));
+            JPanel l = new JPanel(new GridLayout(2, 2)); {
                 l.add(info);
+                l.add(likers);
+                l.add(admin);
+                l.add(degree);
             }
-            JPanel i = new JPanel(); {
-                i.add(likers);
-            }
-            JPanel t = new JPanel(); {
-                i.add(admin);
-            }
-            frame.add(l, BorderLayout.NORTH);
-            frame.add(i, BorderLayout.CENTER);
-            frame.add(t, BorderLayout.SOUTH);
+            frame.add(l, BorderLayout.CENTER);
         }
     }
 
@@ -125,6 +120,22 @@ public class VertexWindow {
         sb.append("<html>Admins : <br>");
         for (User t : model.getAdminsOf(p)) {
             sb.append(t.toString()).append(" <br>");
+        }
+        sb.append("<html>");
+        return sb.toString();
+    }
+
+    private String getdegree(Vertex x) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<html>Other Vertex Distances : <br>");
+        Map<Vertex, Integer> s = model.degreeKnowledge(x);
+        for (Vertex t : s.keySet()) {
+            sb.append(t.toString()).append(": ");
+            if (s.get(t) != Integer.MAX_VALUE) {
+                sb.append(s.get(t)).append("<br>");
+            } else {
+                sb.append("Inatteignable <br>");
+            }
         }
         sb.append("<html>");
         return sb.toString();
